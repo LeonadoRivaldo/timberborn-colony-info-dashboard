@@ -1,0 +1,21 @@
+# Dependencies and build output
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
+**/.sass-cache/
+
+# Local configuration and credentials
+**/.env
+**/.env.*
+!**/.env.example
+**/credentials/
+**/*firebase-adminsdk*.json
+**/*service-account*.json
+
+# Local-only workspace content
+/output/
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp

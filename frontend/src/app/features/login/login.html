@@ -1,0 +1,36 @@
+<main class="login-page">
+  <header class="site-header container-fluid">
+    <a class="brand" href="./"><i class="fa-solid fa-water" aria-hidden="true"></i> Colony Info</a>
+    <span class="edition">TIMBERBORN / GOODS</span>
+  </header>
+  <section class="login-content">
+    <div class="river-mark"><i class="fa-solid fa-water" aria-hidden="true"></i></div>
+    <p class="eyebrow">SUA COLONIA, EM EQUILIBRIO</p>
+    <h1>Colony Info</h1>
+    <p class="intro">Cada recurso conta.</p>
+    <form class="login-actions" #loginForm="ngForm" (ngSubmit)="login()" [attr.aria-busy]="auth.busy()">
+      <div class="login-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" class="form-control" autocomplete="username" required email
+          [ngModel]="email()" (ngModelChange)="email.set($event)" [disabled]="!auth.configured || auth.busy()">
+      </div>
+      <div class="login-field">
+        <label for="password">Senha</label>
+        <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required
+          [ngModel]="password()" (ngModelChange)="password.set($event)" [disabled]="!auth.configured || auth.busy()">
+      </div>
+      <button type="submit" class="btn btn-light login-button" [disabled]="!auth.configured || auth.busy() || loginForm.invalid || !email().trim() || !password()">
+        @if (auth.busy()) { <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> }
+        @else { <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> }
+        {{ auth.busy() ? 'Entrando...' : 'Entrar' }}
+      </button>
+      @if (!auth.configured) {
+        <p class="config-note" role="status"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          {{ configuration.state() === 'error' ? 'Configuracao indisponivel. Tente novamente mais tarde.' : 'Aguardando configuracao do Firebase.' }}
+        </p>
+      }
+      @if (auth.error()) { <p class="login-error" role="alert">{{ auth.error() }}</p> }
+    </form>
+  </section>
+  <footer class="login-footer"><span>RECURSOS PARA UM NOVO CICLO</span><span>01 / COLONY INFO</span></footer>
+</main>

@@ -1,0 +1,114 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.good {
+  --good-color: #c6b779;
+  background: #1d2e27;
+  border: 1px solid #3b4d3f;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 16px 14px 13px;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  transition: border-color 0.15s;
+}
+.good:hover {
+  border-color: var(--good-color);
+}
+.good.water {
+  --good-color: #75cbd5;
+}
+.good.food {
+  --good-color: #b2cb80;
+}
+.good.industry {
+  --good-color: #b1b6c9;
+}
+.good.badwater {
+  --good-color: #d58677;
+}
+.good-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.good-top i {
+  font-size: 22px;
+  color: var(--good-color);
+  height: 26px;
+  display: flex;
+  align-items: center;
+}
+.good-top span {
+  font:
+    9px 'IBM Plex Mono',
+    monospace;
+  color: var(--muted);
+}
+.good h3 {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  min-height: 36px;
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.good-values {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+.good-values strong {
+  font-size: 21px;
+  font-weight: 600;
+}
+.good-values span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.good-track {
+  height: 7px;
+  background: #0e1d17;
+  border: 1px solid #43503c;
+  margin-top: 11px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.good-track span {
+  display: block;
+  height: 100%;
+  background: var(--good-color);
+  transition: width 0.6s ease;
+}
+.good-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 7px;
+  font:
+    9px 'IBM Plex Mono',
+    monospace;
+  color: var(--muted);
+}
+.good-footer .overflow-stock {
+  color: #e0ba76;
+}
+@media (max-width: 760px) {
+  .good {
+    padding: 14px 12px 12px;
+  }
+  .good-values strong {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .good-track span {
+    transition: none;
+  }
+}

@@ -1,0 +1,21 @@
+:host { display: block; }
+.login-page { min-height: 100svh; display: flex; flex-direction: column; color: #fff; position: relative; isolation: isolate; background: #183d39; }
+.login-page::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(8 28 27 / 35%), rgb(8 28 27 / 60%)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2400&q=85') center / cover; }
+.site-header { padding: 30px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { color: inherit; font-family: 'Manrope', sans-serif; font-weight: 700; text-decoration: none; font-size: 20px; display: flex; align-items: center; gap: 12px; }
+.edition, .eyebrow, .login-footer { font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+.login-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 70px 24px 110px; text-align: center; }
+.river-mark { font-size: 40px; margin-bottom: 30px; color: #a4ded4; }
+.eyebrow { margin-bottom: 16px; }
+h1 { font-family: 'Manrope', sans-serif; font-size: 72px; font-weight: 700; margin-bottom: 16px; line-height: 1.12; }
+.intro { font-size: 20px; color: #e3eeeb; }
+.login-actions { width: min(100%, 340px); margin-top: 32px; }
+.login-field { text-align: left; margin-bottom: 16px; }
+.login-field label { display: block; font-size: 13px; margin-bottom: 6px; }
+.login-field input { min-height: 48px; }
+.login-button { min-height: 52px; width: 100%; border-radius: 4px; display: flex; gap: 14px; align-items: center; justify-content: center; font-weight: 600; }
+.login-button:disabled { opacity: .8; }
+.config-note, .login-error { font-size: 13px; margin: 18px 0 0; line-height: 1.6; }
+.login-error { color: #ffcfcb; }
+.login-footer { padding: 24px 40px; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid rgb(255 255 255 / 20%); }
+@media (max-width: 600px) { .site-header { padding: 24px; } .edition { display: none; } h1 { font-size: 48px; } .login-footer { padding: 24px; flex-wrap: wrap; } .login-content { padding-bottom: 70px; } }
