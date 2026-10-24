@@ -126,7 +126,8 @@ describe('Dashboard lists', () => {
     const goods = [
       { id: 'Water', name: 'Water', type: 'Liquid', stock: 120, capacity: 100 },
       { id: 'Log', name: 'Log', type: 'Pileable', stock: 20, capacity: 100 },
-      { id: 'Corn', name: 'Corn', type: 'Box', stock: 15, capacity: 0 },
+      { id: 'Corn', name: 'Corn', type: 'Box', stock: 0, capacity: 0 },
+      { id: 'SunflowerSeeds', name: 'Sunflower seeds', type: 'Box', stock: 15, capacity: 30 },
     ];
     await TestBed.configureTestingModule({
       imports: [Dashboard],
@@ -163,10 +164,12 @@ describe('Dashboard lists', () => {
     const dashboard = fixture.componentInstance;
     expect(dashboard.fill(goods[0])).toBe(100);
     expect(dashboard.fill(goods[2])).toBe(0);
-    expect(fixture.nativeElement.querySelectorAll('.good')).toHaveLength(3);
+    expect(fixture.nativeElement.querySelectorAll('.good')).toHaveLength(4);
     expect(fixture.nativeElement.textContent).toContain('+20 excedente');
     expect(dashboard.power().supply).toBe(500);
     expect(dashboard.food()).toEqual({ stock: 15, availableTypes: 1, totalTypes: 1 });
+    expect(dashboard.goodCategory(goods[2])).toBe('industry');
+    expect(dashboard.goodCategory(goods[3])).toBe('food');
     expect(fixture.nativeElement.querySelector('.population-summary').textContent).toContain('200');
     expect(fixture.nativeElement.querySelector('.overview').textContent).toContain(
       'Reserva de alimentos',
@@ -183,7 +186,7 @@ describe('Dashboard lists', () => {
     dashboard.hideEmpty.set(true);
     expect(dashboard.visibleGoods()).toHaveLength(3);
     dashboard.goodsSort.set('fill');
-    expect(dashboard.visibleGoods()[0].id).toBe('Corn');
+    expect(dashboard.visibleGoods()[0].id).toBe('Log');
     expect(goods[0].id).toBe('Water');
     expect(dashboard.seasons().every((season) => !season.known)).toBe(true);
     fixture.destroy();

@@ -9,43 +9,13 @@ import { ColoniesService } from '../../core/services/colonies/colonies.service';
 import type { StoredDocument } from '../../core/services/firestore/firestore.repository';
 import type { DocumentData } from 'firebase/firestore';
 import type { ColonyGood } from '../../core/models/colony.model';
+import { EDIBLE_FOOD_IDS } from '../../core/models/food-catalog';
 import { SummaryCard } from './components/summary-card/summary-card';
 import { GoodCard } from './components/good-card/good-card';
 import { SeasonCard } from './components/season-card/season-card';
 
 type GoodsCategory = 'all' | 'water' | 'food' | 'materials' | 'industry';
 
-const FOOD_IDS = new Set([
-  'Berries',
-  'Carrot',
-  'Potato',
-  'GrilledPotato',
-  'Wheat',
-  'Bread',
-  'Flour',
-  'Corn',
-  'Eggplant',
-  'Mushroom',
-  'Algae',
-  'Kohlrabi',
-  'Cassava',
-  'Soybean',
-  'MangroveFruit',
-  'FermentedCassava',
-  'FermentedSoybean',
-  'FermentedMushroom',
-  'CornRation',
-  'EggplantRation',
-  'AlgaeRation',
-  'Chestnut',
-  'GrilledChestnut',
-  'CattailRoot',
-  'CattailFlour',
-  'Spadderdock',
-  'GrilledSpadderdock',
-  'MaplePastry',
-  'SunflowerSeeds',
-]);
 const MATERIAL_IDS = new Set([
   'Log',
   'Plank',
@@ -246,7 +216,7 @@ export class Dashboard {
 
   goodCategory(good: ColonyGood): GoodsCategory {
     if (good.id === 'Water' || good.id === 'Badwater') return 'water';
-    if (FOOD_IDS.has(good.id) || /Ration|Fermented|Grilled/.test(good.id)) return 'food';
+    if (EDIBLE_FOOD_IDS.has(good.id)) return 'food';
     return MATERIAL_IDS.has(good.id) ? 'materials' : 'industry';
   }
 

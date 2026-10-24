@@ -94,6 +94,14 @@ O dashboard lista `colonies`, seleciona a primeira por padrao e permite trocar
 a selecao. Nomes vem de `colonyInfo.settlementName`; o ID do documento e o
 `settlementId` fornecido pelo mod.
 
+O resumo de alimentos soma somente os IDs comestiveis documentados para
+Folktails e Iron Teeth (`core/models/food-catalog.ts`). Ingredientes crus como
+corn, cassava e soybean nao entram nessa soma antes de serem processados.
+Coffee entra na lista consumivel de Iron Teeth, embora nao satisfaca Hunger.
+Fonte da classificacao: [Timberborn Wiki - Food](https://timberborn.wiki.gg/wiki/Food)
+e [Ingredients](https://timberborn.wiki.gg/wiki/Ingredients). Como o snapshot
+atual nao inclui faccao, a lista usa a uniao dos alimentos das duas faccoes.
+
 As listas observam `colonies/{settlementId}/adapters` e
 `colonies/{settlementId}/levers`. Trocar de colonia cancela as inscricoes antigas
 e limpa os dados exibidos. O clique altera somente `state` da lever selecionada.
