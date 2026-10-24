@@ -106,6 +106,7 @@ describe('Dashboard lists', () => {
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
     expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(button.querySelector('.fa-toggle-on, .fa-toggle-off')).toBeNull();
     button.click();
     await fixture.whenStable();
     expect(update).toHaveBeenCalledWith('gate', { state: true });

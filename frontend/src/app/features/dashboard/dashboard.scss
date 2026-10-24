@@ -166,7 +166,7 @@ input::placeholder {
   background: transparent;
   color: #acb6ab;
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 26px;
+  grid-template-columns: 22px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   text-align: left;
@@ -206,13 +206,6 @@ input::placeholder {
     monospace;
   color: #a3b994;
   margin-top: 3px;
-}
-.lever-button > i {
-  font-size: 22px;
-  color: #7f8c7d;
-}
-.lever-button.is-on > i {
-  color: #bcdb85;
 }
 button:disabled {
   opacity: 0.55;

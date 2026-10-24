@@ -78,12 +78,6 @@
                 saving().has(lever.id) ? 'Salvando...' : lever.data['state'] ? 'ON' : 'OFF'
               }}</small></span
             >
-            <i
-              class="fa-solid"
-              [class.fa-toggle-on]="lever.data['state']"
-              [class.fa-toggle-off]="!lever.data['state']"
-              aria-hidden="true"
-            ></i>
           </button>
         </li>
       } @empty {
