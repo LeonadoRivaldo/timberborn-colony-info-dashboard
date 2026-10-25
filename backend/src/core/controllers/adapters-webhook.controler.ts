@@ -16,7 +16,7 @@ export class AdaptersWebhookController {
     const { name, state } = params;
     const active = state === "on";
 
-    let normalizedName = name.replace(/(_ADAPTER)$/, "");
+    let normalizedName = name.replace(/(_ADAPTER|_ADPTER)$/, "");
     normalizedName = normalizedName.replace(/(_INDICATOR)$/, "");
     normalizedName = normalizedName.replace(/(_LEVER)$/, "");
 

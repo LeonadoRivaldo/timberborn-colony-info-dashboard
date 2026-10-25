@@ -75,7 +75,7 @@ describe('Dashboard panels and cards', () => {
     expect(removed).toEqual(['badwater']);
   });
 
-  it('lists only saved indicators and reveals the add form on demand', async () => {
+  it('shows active indicators by default and reveals the add form on demand', async () => {
     await TestBed.configureTestingModule({ imports: [IndicatorsPanel] }).compileComponents();
     const fixture = TestBed.createComponent(IndicatorsPanel);
     const saved: { id: string; color: string }[] = [];
@@ -87,8 +87,12 @@ describe('Dashboard panels and cards', () => {
     ]);
     fixture.componentRef.setInput('configurationsLoading', false);
     fixture.detectChanges();
-    expect(fixture.componentInstance.indicators().map((indicator) => indicator.state)).toEqual([true, false]);
+    expect(fixture.componentInstance.showActiveOnly()).toBe(true);
+    expect(fixture.componentInstance.indicators().map((indicator) => indicator.state)).toEqual([true]);
     expect(fixture.nativeElement.querySelector('#indicator-name')).toBeNull();
+    fixture.componentInstance.showActiveOnly.set(false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('app-indicator-card')).toHaveLength(2);
     fixture.componentInstance.showActiveOnly.set(true);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll('app-indicator-card')).toHaveLength(1);

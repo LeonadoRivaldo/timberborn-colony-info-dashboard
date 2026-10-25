@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { vi } from 'vitest';
 import { AdaptersService } from '../../core/services/adapters/adapters.service';
@@ -21,6 +22,7 @@ describe('Dashboard container', () => {
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
+        provideRouter([]),
         { provide: AdaptersService, useValue: { watchList: adapterWatch } },
         { provide: IndicatorConfigurationsService, useValue: { watchList: configurationWatch, update: vi.fn() } },
         { provide: LeversService, useValue: { watchList: () => of([]), update: vi.fn() } },
@@ -52,6 +54,11 @@ describe('Dashboard container', () => {
     secondAdapters.next([{ id: 'raw-drought', data: { name: 'DROUGHT_ADPTER', state: false } }]);
     secondConfigurations.next([{ id: 'DROUGHT', data: { name: 'DROUGHT', state: false, config: { visible: true, color: '#e2bb66' } } }]);
     fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('app-indicator-card')).toHaveLength(0);
+    const activeOnly = fixture.nativeElement.querySelector('.active-filter input') as HTMLInputElement;
+    expect(activeOnly.checked).toBe(true);
+    activeOnly.click();
+    fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.indicator-name')?.textContent).toContain('drought');
     expect(fixture.nativeElement.querySelector('.indicator-name small')?.textContent).toContain('INATIVO');
     fixture.destroy();
@@ -64,6 +71,7 @@ describe('Dashboard container', () => {
     const updateConfiguration = vi.fn().mockResolvedValue(undefined);
     const updateLever = vi.fn().mockResolvedValue(undefined);
     await TestBed.configureTestingModule({ imports: [Dashboard], providers: [
+      provideRouter([]),
       { provide: AdaptersService, useValue: { watchList: () => of([]) } },
       { provide: IndicatorConfigurationsService, useValue: { watchList: () => of([]), update: updateConfiguration } },
       { provide: LeversService, useValue: { watchList: () => of([]), update: updateLever } },
