@@ -12,7 +12,7 @@ import { GOOD_IMAGE_IDS } from '../models/good-icon-catalog';
     }
   `,
   styles: `
-    :host { display: inline-flex; flex: 0 0 24px; width: 24px; height: 24px; align-items: center; justify-content: center; color: var(--good-color, currentColor); }
+    :host { display: inline-flex; flex: 0 0 var(--good-icon-size, 24px); width: var(--good-icon-size, 24px); height: var(--good-icon-size, 24px); align-items: center; justify-content: center; color: var(--good-color, currentColor); }
     img { width: 100%; height: 100%; object-fit: contain; }
     i { font-size: 16px; }
   `,
@@ -20,8 +20,10 @@ import { GOOD_IMAGE_IDS } from '../models/good-icon-catalog';
 export class GoodIcon {
   readonly goodId = input.required<string>();
   readonly fallbackIcon = input('fa-cube');
+  readonly imagePath = input('');
   readonly failedImageId = signal('');
-  readonly image = computed(() => GOOD_IMAGE_IDS.has(this.goodId()) && this.failedImageId() !== this.goodId()
-    ? `goods/${this.goodId()}.png`
-    : null);
+  readonly image = computed(() => {
+    if (this.failedImageId() === this.goodId()) return null;
+    return this.imagePath() || (GOOD_IMAGE_IDS.has(this.goodId()) ? `goods/${this.goodId()}.png` : null);
+  });
 }

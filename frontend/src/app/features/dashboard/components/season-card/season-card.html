@@ -1,4 +1,6 @@
-<div class="season" [class.drought]="season()?.id === 'drought'" [class.badwater]="season()?.id === 'badwater'" role="status" aria-label="Clima atual">
-  <i class="fa-solid {{ season()?.icon || 'fa-cloud' }}" aria-hidden="true"></i>
-  <div><small>CLIMA ATUAL</small><strong>{{ season()?.label || (loading() ? 'Carregando...' : 'Sem sinal') }}</strong></div>
-</div>
+<app-status-card
+  label="CLIMA ATUAL"
+  [icon]="season()?.icon || 'fa-cloud'"
+  [value]="season()?.label || (loading() ? 'Carregando...' : 'Sem sinal')"
+  [tone]="season()?.id === 'drought' ? 'warning' : season()?.id === 'badwater' ? 'danger' : season() ? 'info' : 'neutral'"
+/> 

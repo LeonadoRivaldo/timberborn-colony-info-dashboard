@@ -5,6 +5,7 @@
   position: relative;
 }
 .summary-trend { position: absolute; top: 0; right: 22px; }
+.population-info { position: absolute; top: 0; right: 0; z-index: 2; }
 .overview-label.has-trend { padding-right: 24px; }
 :host:first-child {
   padding-left: 0;
@@ -20,6 +21,7 @@
 .overview-label i {
   color: var(--gold);
 }
+.overview-label app-good-icon { --good-icon-size: 20px; flex: 0 0 20px; }
 .stat-value {
   font-size: 25px;
   font-weight: 600;

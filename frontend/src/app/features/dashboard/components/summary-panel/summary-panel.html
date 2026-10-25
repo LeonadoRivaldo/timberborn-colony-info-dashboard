@@ -6,20 +6,18 @@
     aria-label="Populacao"
     label="Populacao"
     icon="fa-users"
+    [population]="colony()?.population"
     [value]="colony()?.population?.total | number: '1.0-0'"
     unit="habitantes"
-    [details]="[
-      (colony()?.population?.adults ?? '--') + ' adultos',
-      (colony()?.population?.children ?? '--') + ' crias',
-      (colony()?.population?.bots ?? '--') + ' bots'
-    ]"
+    [details]="[populationDetails()]"
   />
   <app-details-card
     label="Reserva de alimentos"
     icon="fa-bowl-food"
+    [gameIconId]="'Carrot'"
     [value]="colony()?.resources ? (food().stock | number: '1.0-0') : null"
     unit="unidades"
-    [details]="[food().availableTypes + ' de ' + food().totalTypes + ' tipos em estoque']"
+    [details]="[foodDetails()]"
   />
   @if (water(); as currentWater) {
     <app-details-card
@@ -39,6 +37,7 @@
   <app-details-card
     label="Rede de energia"
     icon="fa-bolt"
+    [gameIconId]="'Gear'"
     [value]="colony()?.powerGrid ? (power().supply | number: '1.0-0') : null"
     unit="hp"
     [details]="[

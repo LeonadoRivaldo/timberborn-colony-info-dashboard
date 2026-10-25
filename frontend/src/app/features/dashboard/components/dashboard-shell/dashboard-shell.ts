@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { ColonyDocument } from '../../../../core/models/colony.model';
@@ -9,10 +9,12 @@ import { IndicatorsPanel } from '../indicators-panel/indicators-panel';
 import { LeversPanel } from '../levers-panel/levers-panel';
 import { SeasonCard } from '../season-card/season-card';
 import { EventLog } from '../event-log/event-log';
+import { StatusCard } from '../../../../core/status-card/status-card';
+import type { StatusTone } from '../../../../core/status-card/status-card';
 
 @Component({
   selector: 'app-dashboard-shell',
-  imports: [DatePipe, RouterLink, IndicatorsPanel, LeversPanel, SeasonCard, EventLog],
+  imports: [DatePipe, RouterLink, IndicatorsPanel, LeversPanel, SeasonCard, EventLog, StatusCard],
   templateUrl: './dashboard-shell.html',
   styleUrl: './dashboard-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +25,13 @@ export class DashboardShell {
   readonly colonies = input.required<ColonyDocument[]>();
   readonly colonyId = input('');
   readonly colony = input<ColonyDocument>();
+  readonly wellbeingTone = computed<StatusTone>(() => {
+    const wellbeing = this.colony()?.population?.averageWellbeing;
+    if (wellbeing === undefined || !Number.isFinite(wellbeing)) return 'neutral';
+    if (wellbeing < 0) return 'danger';
+    if (wellbeing <= 30) return 'warning';
+    return 'positive';
+  });
   readonly adapters = input<StoredDocument<DocumentData>[]>([]);
   readonly adaptersLoading = input(false);
   readonly adaptersError = input('');

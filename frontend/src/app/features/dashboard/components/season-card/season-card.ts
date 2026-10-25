@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import type { DocumentData } from 'firebase/firestore';
 import type { StoredDocument } from '../../../../core/services/firestore/firestore.repository';
 import { normalizeIndicatorName } from '../../../../core/utils/normalize-indicator-name';
+import { StatusCard } from '../../../../core/status-card/status-card';
 
 const SEASONS = [
   { id: 'badwater', label: 'Mare toxica', icon: 'fa-biohazard', names: ['BADWATER', 'BADTIDE', 'BADWATERSEASON', 'BADTIDEACTIVE', 'ISBADTIDE'] },
@@ -11,6 +12,7 @@ const SEASONS = [
 
 @Component({
   selector: 'app-season-card',
+  imports: [StatusCard],
   templateUrl: './season-card.html',
   styleUrl: './season-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -40,8 +40,9 @@ select { max-width: 280px; color: var(--text); background: #172420; border: 1px 
 .left-rail { border-right: 1px solid var(--line); }
 .right-rail { border-left: 1px solid var(--line); }
 .main-content { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; padding: 24px 30px 18px; }
-.colony-heading { display: flex; flex: 1 1 240px; min-width: 0; align-items: center; justify-content: space-between; gap: 16px; }
+.colony-heading { display: flex; flex: 1 1 240px; min-width: 0; align-items: center; justify-content: flex-start; gap: 12px; border-left: 1px solid var(--line); padding-left: 20px; }
 .colony-title { min-width: 0; }
+.wellbeing-status { flex: 0 0 auto; }
 .heading-actions { display: none; }
 .side-panel-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 36px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 4px; background: #172420; color: var(--muted); font-size: 11px; }
 .side-panel-button i { color: var(--gold); }
@@ -89,8 +90,9 @@ h1 { font-size: 22px; font-weight: 600; margin: 0 0 5px; overflow-wrap: anywhere
   .brand small { font-size: 8px; }
   .colony-picker { order: 3; width: 100%; margin: 0; }
   .colony-picker select { flex: 1; min-width: 0; max-width: none; }
+  .wellbeing-status { order: 2; }
   .main-content { padding: 16px 14px 10px; }
-  .colony-heading { order: 2; flex: 1 1 100%; flex-wrap: wrap; gap: 10px; }
+  .colony-heading { order: 2; flex: 1 1 100%; flex-wrap: wrap; gap: 10px; border-left: 0; border-top: 1px solid var(--line); padding: 10px 0 0; }
   .command-bar > app-season-card { margin-left: auto; max-width: 48%; }
   .heading-actions { width: 100%; }
   .heading-actions button { flex: 1; }

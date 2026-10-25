@@ -302,5 +302,104 @@
       "width": 80,
       "height": 80
     }
+  },
+  "otherIcons": {
+    "BeaverBustIcon": {
+      "resource": "BeaverBustIcon",
+      "width": 112,
+      "height": 112
+    }
+  },
+  "populationIcons": {
+    "ico-adult": {
+      "resource": "ico-adult",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-adult.png"
+    },
+    "ico-beavers": {
+      "resource": "ico-beavers",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-beavers.png"
+    },
+    "ico-bed": {
+      "resource": "ico-bed",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-bed.png"
+    },
+    "ico-bed-empty": {
+      "resource": "ico-bed-empty",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-bed-empty.png"
+    },
+    "ico-bot": {
+      "resource": "ico-bot",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-bot.png"
+    },
+    "ico-child": {
+      "resource": "ico-child",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-child.png"
+    },
+    "ico-child-grow": {
+      "resource": "ico-child-grow",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-child-grow.png"
+    },
+    "ico-no-bed": {
+      "resource": "ico-no-bed",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-no-bed.png"
+    },
+    "ico-no-work-beaver": {
+      "resource": "ico-no-work-beaver",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-no-work-beaver.png"
+    },
+    "ico-no-work-bot": {
+      "resource": "ico-no-work-bot",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-no-work-bot.png"
+    },
+    "ico-work-beaver": {
+      "resource": "ico-work-beaver",
+      "width": 48,
+      "height": 48,
+      "path": "population/ico-work-beaver.png"
+    },
+    "ico-work-bot": {
+      "resource": "ico-work-bot",
+      "width": 48,
+      "height": 48,
+      "path": "population/ico-work-bot.png"
+    },
+    "ico-work-empty-beaver": {
+      "resource": "ico-work-empty-beaver",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-work-empty-beaver.png"
+    },
+    "ico-work-empty-bot": {
+      "resource": "ico-work-empty-bot",
+      "width": 52,
+      "height": 52,
+      "path": "population/ico-work-empty-bot.png"
+    },
+    "ico-workers": {
+      "resource": "ico-workers",
+      "width": 48,
+      "height": 48,
+      "path": "population/ico-workers.png"
+    }
   }
 }

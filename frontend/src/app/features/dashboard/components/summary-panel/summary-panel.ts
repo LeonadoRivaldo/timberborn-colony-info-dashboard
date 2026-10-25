@@ -37,4 +37,14 @@ export class SummaryPanel {
   fill(good: ColonyGood): number {
     return good.capacity > 0 ? Math.min(100, Math.max(0, (good.stock / good.capacity) * 100)) : 0;
   }
+
+  populationDetails(): string {
+    const population = this.colony()?.population;
+    return `${population?.adults ?? '--'} adultos · ${population?.children ?? '--'} crias · ${population?.bots ?? '--'} bots`;
+  }
+
+  foodDetails(){
+    return `${this.food().availableTypes} de ${this.food().totalTypes} tipos em estoque`;
+  }
+
 }

@@ -2,6 +2,7 @@
   <div class="brand"><i class="fa-solid fa-water" aria-hidden="true"></i><div><strong>COLONY INFO</strong><small>TIMBERBORN / CONTROL ROOM</small></div></div>
   <section class="colony-heading" aria-label="Colonia selecionada">
     <div class="colony-title"><h1>{{ colony()?.colonyInfo?.settlementName || 'Sua colonia' }}</h1><div class="cycle"><span><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i>Ciclo {{ colony()?.time?.cycle ?? '--' }}</span><span>Dia {{ colony()?.time?.cycleDay ?? '--' }}</span><span>{{ colony()?.time?.dayNumber ?? '--' }} dias</span></div></div>
+    <app-status-card class="wellbeing-status" icon="fa-face-smile" label="BEM-ESTAR MÉDIO" [value]="colony()?.population?.averageWellbeing ?? '--'" [tone]="wellbeingTone()" />
     <div class="heading-actions">
       <button type="button" class="side-panel-button" [class.active]="activeDrawer() === 'levers'" [attr.aria-expanded]="activeDrawer() === 'levers'" (click)="toggleDrawer('levers')"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Levers<span>{{ levers().length }}</span></button>
       <button type="button" class="side-panel-button" [class.active]="activeDrawer() === 'indicators'" [attr.aria-expanded]="activeDrawer() === 'indicators'" (click)="toggleDrawer('indicators')"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Indicators<span>{{ indicatorConfigurations().length }}</span></button>

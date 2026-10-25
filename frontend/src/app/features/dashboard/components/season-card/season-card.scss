@@ -1,7 +1,1 @@
 :host { display: block; min-width: 0; }
-.season { --season-color: #80c9bc; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-left: 2px solid var(--season-color); background: #1b2a24; }
-.drought { --season-color: #e2bb66; }
-.badwater { --season-color: #e09886; }
-i { color: var(--season-color); font-size: 18px; }
-small { display: block; color: var(--muted); font: 9px 'IBM Plex Mono', monospace; }
-strong { display: block; color: var(--text); font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
