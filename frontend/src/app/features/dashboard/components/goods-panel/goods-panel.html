@@ -1,0 +1,33 @@
+<section class="inventory" aria-labelledby="goods-heading">
+  <div class="section-heading">
+    <h2 id="goods-heading"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>Estoque da colonia</h2>
+    <span class="count">{{ goods().length }} RECURSOS</span>
+  </div>
+  <div class="toolbar">
+    <div class="category-tabs" role="group" aria-label="Categoria de recursos">
+      @for (tab of categories; track tab.id) {
+        <button type="button" [class.is-selected]="category() === tab.id" [attr.aria-pressed]="category() === tab.id" (click)="category.set(tab.id)">
+          <i class="fa-solid {{ tab.icon }}" aria-hidden="true"></i>{{ tab.label }}
+        </button>
+      }
+    </div>
+    <div class="inventory-tools">
+      <div class="search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" aria-label="Buscar recurso" placeholder="Buscar recurso..." [value]="search()" (input)="search.set($any($event.target).value)" /></div>
+      <select aria-label="Ordenar recursos" [value]="sort()" (change)="sort.set($any($event.target).value)">
+        <option value="default">Ordem do jogo</option><option value="name">Nome A-Z</option><option value="stock">Maior estoque</option><option value="fill">Menor preenchimento</option>
+      </select>
+    </div>
+  </div>
+  <div class="inventory-meta">
+    <span>{{ visibleGoods().length }} de {{ goods().length }} recursos</span>
+    <label><input type="checkbox" [checked]="hideEmpty()" (change)="hideEmpty.set($any($event.target).checked)" />Ocultar vazios</label>
+  </div>
+  @if (!stockAvailable()) { <p class="error" role="status">Leitura de estoque indisponivel no jogo.</p> }
+  <div class="goods-grid">
+    @for (good of visibleGoods(); track good.id) {
+      <app-good-card [good]="good" [category]="goodCategory(good)" [icon]="goodIcon(good)" [fill]="fill(good)" />
+    } @empty {
+      <p class="empty">{{ goods().length ? 'Nenhum recurso corresponde aos filtros.' : loading() ? 'Carregando...' : 'Aguardando o snapshot de recursos da colonia.' }}</p>
+    }
+  </div>
+</section>

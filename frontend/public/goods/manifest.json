@@ -1,0 +1,306 @@
+{
+  "gameVersion": "1.1.2.8-ffc2de0-sw",
+  "source": "Installed Timberborn game, Mechanistry",
+  "goods": {
+    "Algae": {
+      "resource": "Sprites/Goods/AlgaeIcon",
+      "width": 80,
+      "height": 80
+    },
+    "AlgaeRation": {
+      "resource": "Sprites/Goods/AlgaeRationIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Antidote": {
+      "resource": "Sprites/Goods/AntidoteIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Badwater": {
+      "resource": "Sprites/Goods/BadwaterIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Berries": {
+      "resource": "Sprites/Goods/BerriesIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Biofuel": {
+      "resource": "Sprites/Goods/BiofuelIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Book": {
+      "resource": "Sprites/Goods/BookIcon",
+      "width": 80,
+      "height": 80
+    },
+    "BotChassis": {
+      "resource": "Sprites/Goods/BotChassisIcon",
+      "width": 80,
+      "height": 80
+    },
+    "BotHead": {
+      "resource": "Sprites/Goods/BotHeadIcon",
+      "width": 80,
+      "height": 80
+    },
+    "BotLimb": {
+      "resource": "Sprites/Goods/BotLimbIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Bread": {
+      "resource": "Sprites/Goods/BreadIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CanolaOil": {
+      "resource": "Sprites/Goods/CanolaOilIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CanolaSeeds": {
+      "resource": "Sprites/Goods/CanolaSeedsIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Carrot": {
+      "resource": "Sprites/Goods/CarrotIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Cassava": {
+      "resource": "Sprites/Goods/CassavaIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Catalyst": {
+      "resource": "Sprites/Goods/CatalystIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CattailCracker": {
+      "resource": "Sprites/Goods/CattailCrackerIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CattailFlour": {
+      "resource": "Sprites/Goods/CattailFlourIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CattailRoot": {
+      "resource": "Sprites/Goods/CattailRootIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Chestnut": {
+      "resource": "Sprites/Goods/ChestnutIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Coffee": {
+      "resource": "Sprites/Goods/CoffeeIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CoffeeBean": {
+      "resource": "Sprites/Goods/CoffeeBeanIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Corn": {
+      "resource": "Sprites/Goods/CornIcon",
+      "width": 80,
+      "height": 80
+    },
+    "CornRation": {
+      "resource": "Sprites/Goods/CornRationIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Dandelion": {
+      "resource": "Sprites/Goods/DandelionIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Dirt": {
+      "resource": "Sprites/Goods/DirtIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Eggplant": {
+      "resource": "Sprites/Goods/EggplantIcon",
+      "width": 80,
+      "height": 80
+    },
+    "EggplantRation": {
+      "resource": "Sprites/Goods/EggplantRationIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Explosives": {
+      "resource": "Sprites/Goods/ExplosivesIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Extract": {
+      "resource": "Sprites/Goods/ExtractIcon",
+      "width": 80,
+      "height": 80
+    },
+    "FermentedCassava": {
+      "resource": "Sprites/Goods/FermentedCassavaIcon",
+      "width": 80,
+      "height": 80
+    },
+    "FermentedMushroom": {
+      "resource": "Sprites/Goods/FermentedMushroomIcon",
+      "width": 80,
+      "height": 80
+    },
+    "FermentedSoybean": {
+      "resource": "Sprites/Goods/FermentedSoybeanIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Fireworks": {
+      "resource": "Sprites/Goods/FireworksIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Gear": {
+      "resource": "Sprites/Goods/GearIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Grease": {
+      "resource": "Sprites/Goods/GreaseIcon",
+      "width": 80,
+      "height": 80
+    },
+    "GrilledChestnut": {
+      "resource": "Sprites/Goods/GrilledChestnutIcon",
+      "width": 80,
+      "height": 80
+    },
+    "GrilledPotato": {
+      "resource": "Sprites/Goods/GrilledPotatoIcon",
+      "width": 80,
+      "height": 80
+    },
+    "GrilledSpadderdock": {
+      "resource": "Sprites/Goods/GrilledSpadderdockIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Kohlrabi": {
+      "resource": "Sprites/Goods/KohlrabiIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Log": {
+      "resource": "Sprites/Goods/LogIcon",
+      "width": 80,
+      "height": 80
+    },
+    "MangroveFruit": {
+      "resource": "Sprites/Goods/MangroveFruitIcon",
+      "width": 80,
+      "height": 80
+    },
+    "MaplePastry": {
+      "resource": "Sprites/Goods/MaplePastryIcon",
+      "width": 80,
+      "height": 80
+    },
+    "MapleSyrup": {
+      "resource": "Sprites/Goods/MapleSyrupIcon",
+      "width": 80,
+      "height": 80
+    },
+    "MetalBlock": {
+      "resource": "Sprites/Goods/MetalBlockIcon",
+      "width": 80,
+      "height": 80
+    },
+    "MetalPart": {
+      "resource": "Sprites/Goods/MetalPartIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Mushroom": {
+      "resource": "Sprites/Goods/MushroomIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Paper": {
+      "resource": "Sprites/Goods/PaperIcon",
+      "width": 80,
+      "height": 80
+    },
+    "PineResin": {
+      "resource": "Sprites/Goods/PineResinIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Plank": {
+      "resource": "Sprites/Goods/PlankIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Potato": {
+      "resource": "Sprites/Goods/PotatoIcon",
+      "width": 80,
+      "height": 80
+    },
+    "PunchCard": {
+      "resource": "Sprites/Goods/PunchCardIcon",
+      "width": 80,
+      "height": 80
+    },
+    "ScrapMetal": {
+      "resource": "Sprites/Goods/ScrapMetalIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Soybean": {
+      "resource": "Sprites/Goods/SoybeanIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Spadderdock": {
+      "resource": "Sprites/Goods/SpadderdockIcon",
+      "width": 80,
+      "height": 80
+    },
+    "SunflowerSeeds": {
+      "resource": "Sprites/Goods/SunflowerSeedsIcon",
+      "width": 80,
+      "height": 80
+    },
+    "TreatedPlank": {
+      "resource": "Sprites/Goods/TreatedPlankIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Water": {
+      "resource": "Sprites/Goods/WaterIcon",
+      "width": 80,
+      "height": 80
+    },
+    "Wheat": {
+      "resource": "Sprites/Goods/WheatIcon",
+      "width": 80,
+      "height": 80
+    },
+    "WheatFlour": {
+      "resource": "Sprites/Goods/WheatFlourIcon",
+      "width": 80,
+      "height": 80
+    }
+  }
+}

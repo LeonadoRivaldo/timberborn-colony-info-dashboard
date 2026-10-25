@@ -1,0 +1,54 @@
+<details class="summary-accordion" open>
+<summary><span><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>Resumo da colonia</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+<section class="overview" aria-label="Resumo da colonia">
+  <app-details-card
+    class="population-summary"
+    aria-label="Populacao"
+    label="Populacao"
+    icon="fa-users"
+    [value]="colony()?.population?.total | number: '1.0-0'"
+    unit="habitantes"
+    [details]="[
+      (colony()?.population?.adults ?? '--') + ' adultos',
+      (colony()?.population?.children ?? '--') + ' crias',
+      (colony()?.population?.bots ?? '--') + ' bots'
+    ]"
+  />
+  <app-details-card
+    label="Reserva de alimentos"
+    icon="fa-bowl-food"
+    [value]="colony()?.resources ? (food().stock | number: '1.0-0') : null"
+    unit="unidades"
+    [details]="[food().availableTypes + ' de ' + food().totalTypes + ' tipos em estoque']"
+  />
+  @if (water(); as currentWater) {
+    <app-details-card
+      label="Reserva de agua"
+      icon="fa-droplet"
+      [trend]="currentWater.trend"
+      [value]="currentWater.stock | number: '1.0-0'"
+      [unit]="'/ ' + (currentWater.capacity | number: '1.0-0')"
+      [fillBar]="true"
+      [currentFillBarValue]="currentWater.stock"
+      [maxFillBarValue]="currentWater.capacity"
+      [details]="[(fill(currentWater) | number: '1.0-0') + '% da capacidade']"
+    />
+  } @else {
+    <app-details-card label="Reserva de agua" icon="fa-droplet" value="--" unit="/ --" />
+  }
+  <app-details-card
+    label="Rede de energia"
+    icon="fa-bolt"
+    [value]="colony()?.powerGrid ? (power().supply | number: '1.0-0') : null"
+    unit="hp"
+    [details]="[
+      'Demanda ' + (power().demand | number: '1.0-0') + ' hp · ' + power().networks + ' redes',
+      power().strained
+        ? power().strained + ' redes com deficit'
+        : colony()?.powerGrid
+          ? 'Geracao atende a demanda'
+          : 'Sem leitura de energia'
+    ]"
+  />
+</section>
+</details>

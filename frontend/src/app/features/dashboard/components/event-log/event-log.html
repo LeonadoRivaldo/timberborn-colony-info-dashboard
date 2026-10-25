@@ -1,0 +1,27 @@
+<dialog #dialog aria-labelledby="event-log-title" (close)="closed.emit()">
+  <header>
+    <div><h2 id="event-log-title"><i class="fa-solid fa-list-ul" aria-hidden="true"></i>Event log</h2><p>Colonia {{ colonies.selectedId() }}</p></div>
+    <button type="button" class="close-button" aria-label="Fechar event log" title="Fechar" (click)="dialog.close()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+  </header>
+  <div class="event-content">
+    @if (state().loading) { <p class="message" role="status">Carregando eventos...</p> }
+    @else if (state().error) { <p class="error" role="alert">{{ state().error }}</p> }
+    @else if (!state().data.length) { <p class="message">Nenhum evento registrado.</p> }
+    @else {
+      <table>
+        <thead><tr><th scope="col">Horario</th><th scope="col">Chamada</th><th scope="col">Status</th><th scope="col">Duracao</th></tr></thead>
+        <tbody>
+          @for (event of state().data; track event.id) {
+            <tr [class.failed]="!event.data.success">
+              <td class="time">{{ event.data.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td class="request"><span class="method">{{ event.data.method }}</span><code>{{ event.data.endpoint }}</code>@if (event.data.error) { <p class="event-error">{{ event.data.error }}</p> }</td>
+              <td><span class="status" [class.failure]="!event.data.success">{{ event.data.statusCode }}</span></td>
+              <td class="duration">{{ event.data.durationMs | number:'1.0-0' }} ms</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+  <footer>{{ state().data.length }} / 100 eventos recentes</footer>
+</dialog>

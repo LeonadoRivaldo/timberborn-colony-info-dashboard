@@ -1,0 +1,35 @@
+<header class="page-header">
+  <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>Dashboard</a>
+  <h1>Gerenciar automacoes</h1>
+  <div class="colony-picker">
+    <label for="management-colony">Colonia</label>
+    <select id="management-colony" [value]="colonies.selectedId()" [disabled]="!colonies.state().data.length" (change)="selectColony($any($event.target).value)">
+      @for (colony of colonies.state().data; track colony.id) {
+        <option [value]="colony.id">{{ colony.data.colonyInfo.settlementName }}</option>
+      }
+      @if (!colonies.state().data.length) { <option value="">Nenhuma colonia</option> }
+    </select>
+  </div>
+</header>
+<main>
+  @if (colonies.state().error) { <p class="error" role="alert">{{ colonies.state().error }}</p> }
+  @if (deleteError()) { <p class="error" role="alert">{{ deleteError() }}</p> }
+  <div class="lists">
+    @for (section of sections; track section.kind) {
+      <section [attr.aria-labelledby]="section.kind + '-heading'">
+        <div class="list-heading"><h2 [id]="section.kind + '-heading'">{{ section.title }}</h2><span>{{ section.state().items.length }}</span></div>
+        @if (section.state().error) { <p class="error" role="alert">{{ section.state().error }}</p> }
+        <ul>
+          @for (item of section.state().items; track item.id) {
+            <li>
+              <span>{{ item.name }}</span>
+              <button type="button" [disabled]="deleting().has(colonies.selectedId() + '/' + section.kind + '/' + item.id)" [attr.aria-label]="'Excluir ' + item.name + ' de ' + section.title" title="Excluir" (click)="remove(section.kind, item.id, item.name)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            </li>
+          } @empty {
+            <li class="empty" role="status">{{ section.state().loading ? 'Carregando...' : 'Nenhum item.' }}</li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+</main>

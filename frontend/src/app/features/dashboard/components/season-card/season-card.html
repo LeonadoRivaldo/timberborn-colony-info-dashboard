@@ -1,23 +1,4 @@
-<div class="season-status" role="status" aria-label="Estacao atual">
-  @if (season(); as current) {
-    <div
-      class="season is-active"
-      [class.drought]="current.id === 'drought'"
-      [class.badwater]="current.id === 'badwater'"
-      [title]="current.names"
-    >
-      <i class="fa-solid {{ current.icon }}" aria-hidden="true"></i>
-      <div>
-        <small>ESTACAO ATUAL</small><strong>{{ current.label }}</strong>
-      </div>
-      <span class="sensor-light" aria-hidden="true"></span>
-    </div>
-  } @else {
-    <div class="season">
-      <i class="fa-solid fa-cloud" aria-hidden="true"></i>
-      <div>
-        <small>ESTACAO ATUAL</small><strong>{{ loading() ? 'Carregando...' : 'Sem sinal' }}</strong>
-      </div>
-    </div>
-  }
+<div class="season" [class.drought]="season()?.id === 'drought'" [class.badwater]="season()?.id === 'badwater'" role="status" aria-label="Clima atual">
+  <i class="fa-solid {{ season()?.icon || 'fa-cloud' }}" aria-hidden="true"></i>
+  <div><small>CLIMA ATUAL</small><strong>{{ season()?.label || (loading() ? 'Carregando...' : 'Sem sinal') }}</strong></div>
 </div>

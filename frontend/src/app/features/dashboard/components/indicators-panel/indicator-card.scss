@@ -1,0 +1,8 @@
+:host { display: contents; }
+.indicator-row { min-height: 50px; display: grid; grid-template-columns: 15px minmax(0, 1fr) 28px; align-items: center; gap: 10px; border: 1px solid #33443a; padding: 8px 9px; background: #1b2a24; }
+.indicator-light { width: 10px; height: 10px; border-radius: 50%; background: #55665a; border: 1px solid #708075; }
+.indicator-light.active { background: var(--indicator-color, #80c9bc); border-color: var(--indicator-color, #80c9bc); box-shadow: 0 0 9px color-mix(in srgb, var(--indicator-color, #80c9bc) 55%, transparent); }
+.indicator-name { color: #dce5d8; font-size: 11px; overflow-wrap: anywhere; }
+.indicator-name small { display: block; font: 9px 'IBM Plex Mono', monospace; color: var(--muted); margin-top: 3px; }
+.remove-button { border: 0; background: transparent; color: #89988b; min-height: 28px; cursor: pointer; }
+.remove-button:hover { color: #f0b4a7; }

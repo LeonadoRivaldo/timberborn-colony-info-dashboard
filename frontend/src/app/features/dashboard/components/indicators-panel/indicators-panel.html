@@ -1,0 +1,35 @@
+<section class="panel" aria-label="Indicators configurados">
+  <div class="section-heading"><h2><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Indicators</h2><span class="count">{{ indicators().length }}</span></div>
+  <label class="active-filter"><input type="checkbox" [checked]="showActiveOnly()" (change)="showActiveOnly.set($any($event.target).checked)" />Mostrar apenas ativos</label>
+  @if (configurationsLoading()) { <p class="empty" role="status">Carregando...</p> }
+  @if (configurationsError()) { <p class="error" role="alert">{{ configurationsError() }}</p> }
+  @if (saveError()) { <p class="error" role="alert">{{ saveError() }}</p> }
+
+  <button class="new-indicator-button" type="button" [attr.aria-expanded]="isAdding()" (click)="isAdding() ? cancelAdd() : openAddForm()">
+    <i class="fa-solid" [class.fa-plus]="!isAdding()" [class.fa-xmark]="isAdding()" aria-hidden="true"></i>
+    {{ isAdding() ? 'Cancelar' : 'Adicionar indicator' }}
+  </button>
+
+  <ul class="indicator-list">
+    @for (indicator of indicators(); track indicator.id) {
+      <app-indicator-card [indicator]="indicator" (remove)="remove($event)" />
+    } @empty {
+      @if (!configurationsLoading()) { <li class="empty">{{ showActiveOnly() ? 'Nenhum indicator ativo.' : 'Nenhum indicator configurado.' }}</li> }
+    }
+  </ul>
+
+  @if (isAdding()) {
+    <form class="indicator-config" (submit)="$event.preventDefault(); save()">
+      <label for="indicator-name">Indicator</label>
+      <select id="indicator-name" [value]="selectedId()" (change)="selectedId.set($any($event.target).value)">
+        <option value="">Selecione um indicator</option>
+        @for (indicator of availableIndicators(); track indicator.id) {
+          <option [value]="indicator.id">{{ displayName(indicator.data.name || indicator.id) }}</option>
+        }
+      </select>
+      @if (!availableIndicators().length) { <p class="empty">Nenhum indicator disponivel para adicionar.</p> }
+      <div class="color-row"><label for="indicator-color">Cor</label><input id="indicator-color" type="color" [value]="selectedColor()" (input)="selectedColor.set($any($event.target).value)" /><button type="submit" [disabled]="!selectedId()">Salvar</button></div>
+    </form>
+  }
+  <div class="rail-note"><i class="fa-solid fa-palette" aria-hidden="true"></i>CONFIGURACAO POR COLONIA</div>
+</section>

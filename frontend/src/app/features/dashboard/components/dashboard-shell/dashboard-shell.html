@@ -1,0 +1,37 @@
+<header class="command-bar">
+  <div class="brand"><i class="fa-solid fa-water" aria-hidden="true"></i><div><strong>COLONY INFO</strong><small>TIMBERBORN / CONTROL ROOM</small></div></div>
+  <section class="colony-heading" aria-label="Colonia selecionada">
+    <div class="colony-title"><h1>{{ colony()?.colonyInfo?.settlementName || 'Sua colonia' }}</h1><div class="cycle"><span><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i>Ciclo {{ colony()?.time?.cycle ?? '--' }}</span><span>Dia {{ colony()?.time?.cycleDay ?? '--' }}</span><span>{{ colony()?.time?.dayNumber ?? '--' }} dias</span></div></div>
+    <div class="heading-actions">
+      <button type="button" class="side-panel-button" [class.active]="activeDrawer() === 'levers'" [attr.aria-expanded]="activeDrawer() === 'levers'" (click)="toggleDrawer('levers')"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Levers<span>{{ levers().length }}</span></button>
+      <button type="button" class="side-panel-button" [class.active]="activeDrawer() === 'indicators'" [attr.aria-expanded]="activeDrawer() === 'indicators'" (click)="toggleDrawer('indicators')"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Indicators<span>{{ indicatorConfigurations().length }}</span></button>
+    </div>
+  </section>
+  <app-season-card [adapters]="adapters()" [loading]="adaptersLoading()" />
+  <div class="colony-picker">
+    <label for="colony">COLONIA</label>
+    <select id="colony" [value]="colonyId()" [disabled]="!colonies().length || leverSaving().size > 0" (change)="selectColony.emit($any($event.target).value)">
+      @for (item of colonies(); track item.colonyInfo.settlementId) { <option [value]="item.colonyInfo.settlementId">{{ item.colonyInfo.settlementName }}</option> }
+      @if (!colonies().length) { <option value="">Nenhuma colonia</option> }
+    </select>
+  </div>
+  <div class="sync-state"><i class="fa-solid fa-clock" aria-hidden="true"></i>@if (colony()?.timestamp) { <span>Snapshot {{ colony()?.timestamp | date:'HH:mm:ss' }}</span> } @else { <span>Aguardando snapshot</span> }</div>
+  <button type="button" class="side-panel-button" aria-haspopup="dialog" [attr.aria-expanded]="eventLogOpen()" (click)="eventLogOpen.set(true)"><i class="fa-solid fa-list-ul" aria-hidden="true"></i>Event log</button>
+  <a routerLink="/manage" class="side-panel-button" style="text-decoration: none"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Gerenciar</a>
+</header>
+
+@if (eventLogOpen()) { <app-event-log (closed)="eventLogOpen.set(false)" /> }
+
+<div class="layout">
+  <button type="button" class="drawer-backdrop" [class.visible]="activeDrawer() !== null" aria-label="Fechar painel lateral" (click)="closeDrawer()"></button>
+  <app-levers-panel class="left-rail" [class.drawer-open]="activeDrawer() === 'levers'" [levers]="levers()" [loading]="leversLoading()" [error]="leversError()" [saving]="leverSaving()" [writeError]="leverWriteError()" (toggle)="toggleLever.emit($event)" />
+  <main class="main-content">
+    @if (colonyLoading()) { <p class="empty" role="status">Carregando colonias...</p> }
+    @if (colonyError()) { <p class="error" role="alert">{{ colonyError() }}</p> }
+    @if (adaptersError()) { <p class="error" role="alert">{{ adaptersError() }}</p> }
+    <div class="summary-slot"><ng-content select="[dashboard-summary]" /></div>
+    <div class="goods-slot"><ng-content select="[dashboard-goods]" /></div>
+    <footer class="dashboard-footer"><span>COLONY INFO / TIMBERBORN</span><span>@if (colony()?.timestamp) { ULTIMA LEITURA {{ colony()?.timestamp | date:'dd/MM HH:mm:ss' }} } @else { SEM LEITURA } · SNAPSHOTS A CADA 120 S</span></footer>
+  </main>
+  <app-indicators-panel class="right-rail" [class.drawer-open]="activeDrawer() === 'indicators'" [configurations]="indicatorConfigurations()" [configurationsLoading]="indicatorsLoading()" [configurationsError]="indicatorsError()" [saveError]="indicatorSaveError()" (saveConfiguration)="saveIndicator.emit($event)" (removeConfiguration)="removeIndicator.emit($event)" />
+</div>

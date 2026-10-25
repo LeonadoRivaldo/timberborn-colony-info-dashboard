@@ -1,275 +1,31 @@
-<header class="command-bar">
-  <div class="brand">
-    <i class="fa-solid fa-water" aria-hidden="true"></i>
-    <div><strong>COLONY INFO</strong><small>TIMBERBORN / CONTROL ROOM</small></div>
-  </div>
-  <div class="colony-picker">
-    <label for="colony">COLONIA</label>
-    <select
-      id="colony"
-      [value]="colonies.selectedId()"
-      [disabled]="!colonies.state().data.length || saving().size > 0"
-      (change)="colonies.select($any($event.target).value)"
-    >
-      @for (item of colonies.state().data; track item.id) {
-        <option [value]="item.id">{{ item.data.colonyInfo.settlementName }}</option>
-      }
-      @if (!colonies.state().data.length) {
-        <option value="">Nenhuma colonia</option>
-      }
-    </select>
-  </div>
-  <div class="sync-state">
-    <i class="fa-solid fa-clock" aria-hidden="true"></i>
-    @if (colony()?.timestamp) {
-      <span>Snapshot {{ colony()?.timestamp | date: 'HH:mm:ss' }}</span>
-    } @else {
-      <span>Aguardando snapshot</span>
-    }
-  </div>
-</header>
-<div class="layout">
-  <aside class="lever-rail" aria-label="Controles de levers">
-    <div class="section-heading">
-      <h2><i class="fa-solid fa-sliders" aria-hidden="true"></i>Levers</h2>
-      <span class="count">{{ levers().data?.length ?? 0 }}</span>
-    </div>
-    <div class="rail-summary">
-      <i class="fa-solid fa-circle" aria-hidden="true"></i>{{ activeLevers() }} ativas
-    </div>
-    <div class="search">
-      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i
-      ><input
-        type="search"
-        aria-label="Buscar lever"
-        placeholder="Buscar lever..."
-        [value]="leverSearch()"
-        (input)="leverSearch.set($any($event.target).value)"
-      />
-    </div>
-    @if (levers().loading) {
-      <p class="empty" role="status">Carregando...</p>
-    }
-    @if (levers().error) {
-      <p class="error" role="alert">{{ levers().error }}</p>
-    }
-    @if (writeError()) {
-      <p class="error" role="alert">{{ writeError() }}</p>
-    }
-    <ul class="lever-list">
-      @for (lever of visibleLevers(); track lever.id) {
-        <li>
-          <button
-            type="button"
-            class="lever-button"
-            [class.is-on]="lever.data['state']"
-            [disabled]="saving().has(lever.id) || levers().loading"
-            [attr.aria-pressed]="!!lever.data['state']"
-            [attr.aria-label]="
-              (lever.data['state'] ? 'Desativar ' : 'Ativar ') + (lever.data['name'] || lever.id)
-            "
-            [title]="lever.data['name'] || lever.id"
-            (click)="toggleLever(lever.id, lever.data['state'])"
-          >
-            <span class="lever-light" aria-hidden="true"></span>
-            <span class="lever-name"
-              >{{ displayName(lever.data['name'] || lever.id)
-              }}<small>{{
-                saving().has(lever.id) ? 'Salvando...' : lever.data['state'] ? 'ON' : 'OFF'
-              }}</small></span
-            >
-          </button>
-        </li>
-      } @empty {
-        @if (!levers().loading && !levers().error) {
-          <li class="empty">
-            {{ leverSearch() ? 'Nenhuma lever encontrada.' : 'Nenhuma lever.' }}
-          </li>
-        }
-      }
-    </ul>
-    <div class="rail-note">
-      <i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i> AUTOMACAO DA COLONIA
-    </div>
-  </aside>
-  <main class="main-content">
-    @if (colonies.state().loading) {
-      <p class="empty" role="status">Carregando colonias...</p>
-    }
-    @if (colonies.state().error) {
-      <p class="error" role="alert">{{ colonies.state().error }}</p>
-    }
-    <section class="colony-heading" aria-label="Colonia selecionada">
-      <div>
-        <p class="eyebrow">VISAO GERAL DO ASSENTAMENTO</p>
-        <h1>{{ colony()?.colonyInfo?.settlementName || 'Sua colonia' }}</h1>
-        <div class="cycle">
-          <span
-            ><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i>Ciclo
-            {{ colony()?.time?.cycle ?? '--' }}</span
-          ><span>Dia {{ colony()?.time?.cycleDay ?? '--' }}</span
-          ><span>{{ colony()?.time?.dayNumber ?? '--' }} dias</span>
-        </div>
-      </div>
-      <div class="header-statuses">
-        <app-season-card [season]="activeSeason()" [loading]="adapters().loading" />
-      </div>
-    </section>
-    @if (adapters().error) {
-      <p class="error" role="alert">{{ adapters().error }}</p>
-    }
-    <section class="overview" aria-label="Resumo da colonia">
-      <app-summary-card
-        class="population-summary"
-        aria-label="Populacao"
-        label="Populacao"
-        icon="fa-users"
-        [value]="colony()?.population?.total | number: '1.0-0'"
-        unit="habitantes"
-      >
-        <div class="stat-detail">
-          <span>{{ colony()?.population?.adults ?? '--' }} adultos</span
-          ><span>{{ colony()?.population?.children ?? '--' }} crias</span
-          ><span
-            ><i class="fa-solid fa-robot" aria-hidden="true"></i>
-            {{ colony()?.population?.bots ?? '--' }}</span
-          >
-        </div>
-      </app-summary-card>
-      <app-summary-card
-        label="Reserva de alimentos"
-        icon="fa-bowl-food"
-        [value]="colony()?.resources ? (food().stock | number: '1.0-0') : null"
-        unit="unidades"
-      >
-        <div class="stat-detail">
-          <span
-            ><b>{{ food().availableTypes }}</b> de {{ food().totalTypes }} tipos em estoque</span
-          >
-        </div>
-      </app-summary-card>
-      <app-summary-card
-        label="Reserva de agua"
-        icon="fa-droplet"
-        [value]="water() ? (water()!.stock | number: '1.0-0') : null"
-        [unit]="'/ ' + (water() ? (water()!.capacity | number: '1.0-0') : '--')"
-      >
-        <div class="mini-track" aria-hidden="true">
-          <span [style.width.%]="water() ? fill(water()!) : 0"></span>
-        </div>
-        <div class="stat-detail">
-          {{ water() ? (fill(water()!) | number: '1.0-0') : '--' }}% da capacidade
-        </div>
-      </app-summary-card>
-      <app-summary-card
-        label="Rede de energia"
-        icon="fa-bolt"
-        [value]="colony()?.powerGrid ? (power().supply | number: '1.0-0') : null"
-        unit="hp"
-      >
-        <div class="stat-detail">
-          <span
-            >Demanda <b>{{ power().demand | number: '1.0-0' }} hp</b></span
-          ><span>{{ power().networks }} redes</span>
-        </div>
-        <div class="stat-detail">
-          {{
-            power().strained
-              ? power().strained + ' redes com deficit'
-              : colony()?.powerGrid
-                ? 'Geracao atende a demanda'
-                : 'Sem leitura de energia'
-          }}
-        </div>
-      </app-summary-card>
-    </section>
-    <section class="inventory" aria-labelledby="goods-heading">
-      <div class="section-heading">
-        <h2 id="goods-heading">
-          <i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>Estoque da colonia
-        </h2>
-        <span class="count">{{ goods().length }} RECURSOS</span>
-      </div>
-      <div class="toolbar">
-        <div class="category-tabs" role="group" aria-label="Categoria de recursos">
-          @for (tab of categories; track tab.id) {
-            <button
-              type="button"
-              [class.is-selected]="category() === tab.id"
-              [attr.aria-pressed]="category() === tab.id"
-              (click)="category.set(tab.id)"
-            >
-              <i class="fa-solid {{ tab.icon }}" aria-hidden="true"></i>{{ tab.label }}
-            </button>
-          }
-        </div>
-        <div class="inventory-tools">
-          <div class="search">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i
-            ><input
-              type="search"
-              aria-label="Buscar recurso"
-              placeholder="Buscar recurso..."
-              [value]="search()"
-              (input)="search.set($any($event.target).value)"
-            />
-          </div>
-          <select
-            aria-label="Ordenar recursos"
-            [value]="goodsSort()"
-            (change)="goodsSort.set($any($event.target).value)"
-          >
-            <option value="default">Ordem do jogo</option>
-            <option value="name">Nome A-Z</option>
-            <option value="stock">Maior estoque</option>
-            <option value="fill">Menor preenchimento</option>
-          </select>
-        </div>
-      </div>
-      <div class="inventory-meta">
-        <span>{{ visibleGoods().length }} de {{ goods().length }} recursos</span
-        ><label
-          ><input
-            type="checkbox"
-            [checked]="hideEmpty()"
-            (change)="hideEmpty.set($any($event.target).checked)"
-          />Ocultar vazios</label
-        >
-      </div>
-      @if (colony()?.resources?.stockAvailable === false) {
-        <p class="error" role="status">Leitura de estoque indisponivel no jogo.</p>
-      }
-      <div class="goods-grid">
-        @for (good of visibleGoods(); track good.id) {
-          <app-good-card
-            [good]="good"
-            [category]="goodCategory(good)"
-            [icon]="goodIcon(good)"
-            [fill]="fill(good)"
-          />
-        } @empty {
-          <p class="empty">
-            {{
-              goods().length
-                ? 'Nenhum recurso corresponde aos filtros.'
-                : colonies.state().loading
-                  ? 'Carregando...'
-                  : 'Aguardando o snapshot de recursos da colonia.'
-            }}
-          </p>
-        }
-      </div>
-    </section>
-    <footer class="dashboard-footer">
-      <span>COLONY INFO / TIMBERBORN</span
-      ><span>
-        @if (colony()?.timestamp) {
-          ULTIMA LEITURA {{ colony()?.timestamp | date: 'dd/MM HH:mm:ss' }}
-        } @else {
-          SEM LEITURA
-        }
-        · SNAPSHOTS A CADA 120 S</span
-      >
-    </footer>
-  </main>
-</div>
+<app-dashboard-shell
+  [colonies]="colonies.state().data.map((item) => item.data)"
+  [colonyId]="colonies.selectedId()"
+  [colony]="colony()"
+  [adapters]="adapters().data ?? []"
+  [adaptersLoading]="adapters().loading"
+  [adaptersError]="adapters().error"
+  [indicatorConfigurations]="indicatorConfigurations().data ?? []"
+  [indicatorsLoading]="indicatorConfigurations().loading || adapters().loading"
+  [indicatorsError]="indicatorConfigurations().error"
+  [indicatorSaveError]="indicatorWriteError()"
+  [levers]="levers().data ?? []"
+  [leversLoading]="levers().loading"
+  [leversError]="levers().error"
+  [leverSaving]="savingLevers()"
+  [leverWriteError]="leverWriteError()"
+  [colonyLoading]="colonies.state().loading"
+  [colonyError]="colonies.state().error"
+  (toggleLever)="toggleLever($event.id, $event.state)"
+  (selectColony)="selectColony($event)"
+  (saveIndicator)="saveIndicator($event)"
+  (removeIndicator)="removeIndicator($event)"
+>
+  <app-summary-panel dashboard-summary [colony]="colony()" />
+  <app-goods-panel
+    dashboard-goods
+    [goods]="colony()?.resources?.goods ?? []"
+    [loading]="colonies.state().loading"
+    [stockAvailable]="colony()?.resources?.stockAvailable !== false"
+  />
+</app-dashboard-shell>

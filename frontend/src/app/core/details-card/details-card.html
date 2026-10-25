@@ -1,0 +1,24 @@
+@if (trend()) { <app-goods-trend class="summary-trend" [trend]="trend()" /> }
+<div class="overview-label" [class.has-trend]="trend() && trend()?.type !== 'Stable'">
+  <i class="fa-solid {{ icon() }}" aria-hidden="true"></i>
+  {{ label() }}
+</div>
+<div class="stat-value">
+  {{ value() ?? '--' }}
+  @if (unit()) {
+    <span class="stat-unit">{{ unit() }}</span>
+  }
+</div>
+
+@if (fillBar()) {
+  <div class="mini-track" aria-hidden="true">
+    <span [style.width.%]="fill()"></span>
+  </div>
+}
+
+@for (detail of details(); track $index) {
+  <div class="stat-detail">
+    {{ detail }}
+  </div>
+}
+

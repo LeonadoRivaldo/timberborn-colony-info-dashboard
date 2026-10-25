@@ -109,6 +109,11 @@ O backend local observa apenas a colonia atualmente carregada no jogo; alterar
 uma colonia offline nao executa comandos nessa instancia do jogo.
 
 O frontend acessa somente o Firestore, nunca o backend ou localhost do jogo.
+O botao `Event log` no cabecalho abre os ultimos 100 eventos de
+`colonies/{settlementId}/events`, em tempo real, com horario local, metodo,
+endpoint, status HTTP, duracao e erros. O listener existe somente enquanto o
+painel esta aberto. Regras publicadas precisam autorizar leitura dessa
+subcolecao ao usuario permitido, sem conceder escrita pelo frontend.
 O backend grava o snapshot da colonia a cada 120 segundos. As regras publicadas
 precisam autorizar seu UID nesses novos caminhos; a aplicacao nao as publica
 automaticamente. Dados antigos na raiz nao sao migrados por esta mudanca.

@@ -16,8 +16,10 @@ export class AdaptersWebhookController {
     const { name, state } = params;
     const active = state === "on";
 
-    const normalizedName = name.replace(/_ADAPTER$/, "");
-    console.log("HERE!", { normalizedName });
+    let normalizedName = name.replace(/(_ADAPTER)$/, "");
+    normalizedName = normalizedName.replace(/(_INDICATOR)$/, "");
+    normalizedName = normalizedName.replace(/(_LEVER)$/, "");
+
     await this.service.write(
       normalizedName,
       { name: normalizedName, state: active },

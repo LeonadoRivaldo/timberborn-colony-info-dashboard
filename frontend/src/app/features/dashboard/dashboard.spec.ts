@@ -1,195 +1,88 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { vi } from 'vitest';
 import { AdaptersService } from '../../core/services/adapters/adapters.service';
+import { ColoniesService } from '../../core/services/colonies/colonies.service';
+import { IndicatorConfigurationsService } from '../../core/services/indicators/indicator-configurations.service';
 import { LeversService } from '../../core/services/levers/levers.service';
 import { Dashboard } from './dashboard';
-import { ColoniesService } from '../../core/services/colonies/colonies.service';
-import { of } from 'rxjs';
 
-describe('Dashboard lists', () => {
-  it('unsubscribes from the previous colony and clears its data when selection changes', async () => {
+describe('Dashboard container', () => {
+  it('changes colony-scoped listeners and reads state directly from configured indicators', async () => {
     const selectedId = signal('first');
-    const firstAdapters = new Subject<unknown[]>();
-    const secondAdapters = new Subject<unknown[]>();
-    const watchList = vi.fn(() => (selectedId() === 'first' ? firstAdapters : secondAdapters));
+    const firstAdapters = new Subject<any[]>();
+    const secondAdapters = new Subject<any[]>();
+    const firstConfigurations = new Subject<any[]>();
+    const secondConfigurations = new Subject<any[]>();
+    const adapterWatch = vi.fn(() => selectedId() === 'first' ? firstAdapters : secondAdapters);
+    const configurationWatch = vi.fn(() => selectedId() === 'first' ? firstConfigurations : secondConfigurations);
+
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
-        { provide: AdaptersService, useValue: { watchList } },
-        { provide: LeversService, useValue: { watchList: () => of([]) } },
-        {
-          provide: ColoniesService,
-          useValue: {
-            selectedId,
-            state: signal({
-              data: [
-                { id: 'first', data: { colonyInfo: { settlementName: 'First' } } },
-                { id: 'second', data: { colonyInfo: { settlementName: 'Second' } } },
-              ],
-              loading: false,
-              error: '',
-            }),
-            select: (id: string) => selectedId.set(id),
-          },
-        },
+        { provide: AdaptersService, useValue: { watchList: adapterWatch } },
+        { provide: IndicatorConfigurationsService, useValue: { watchList: configurationWatch, update: vi.fn() } },
+        { provide: LeversService, useValue: { watchList: () => of([]), update: vi.fn() } },
+        { provide: ColoniesService, useValue: {
+          selectedId,
+          state: signal({ data: [
+            { id: 'first', data: { colonyInfo: { settlementId: 'first', settlementName: 'First' } } },
+            { id: 'second', data: { colonyInfo: { settlementId: 'second', settlementName: 'Second' } } },
+          ], loading: false, error: '' }),
+          select: (id: string) => selectedId.set(id),
+        } },
       ],
     }).compileComponents();
+
     const fixture = TestBed.createComponent(Dashboard);
     fixture.detectChanges();
     await fixture.whenStable();
-    firstAdapters.next([{ id: 'old', data: { name: 'BADWATER_ADPTER', state: true } }]);
+    firstAdapters.next([{ id: 'raw-badwater', data: { name: 'BADWATER_ADPTER', state: true } }]);
+    firstConfigurations.next([{ id: 'BADWATER', data: { name: 'BADWATER', state: true, config: { visible: true, color: '#ff6655' } } }]);
     fixture.detectChanges();
-    expect(
-      fixture.nativeElement.querySelector('.season.badwater').classList.contains('is-active'),
-    ).toBe(true);
+    expect(fixture.nativeElement.querySelector('.indicator-light.active')?.style.getPropertyValue('--indicator-color')).toBe('#ff6655');
+    expect(fixture.nativeElement.querySelector('.indicator-name')?.textContent).toContain('badwater');
 
-    const select = fixture.nativeElement.querySelector('select') as HTMLSelectElement;
-    select.value = 'second';
-    select.dispatchEvent(new Event('change'));
+    fixture.componentInstance.selectColony('second');
     await fixture.whenStable();
     fixture.detectChanges();
     expect(firstAdapters.observed).toBe(false);
-    expect(fixture.nativeElement.querySelector('.season.badwater')).toBeNull();
-    secondAdapters.next([{ id: 'new', data: { name: 'WET_SEASON_ADPTER', state: true } }]);
+    expect(firstConfigurations.observed).toBe(false);
+    secondAdapters.next([{ id: 'raw-drought', data: { name: 'DROUGHT_ADPTER', state: false } }]);
+    secondConfigurations.next([{ id: 'DROUGHT', data: { name: 'DROUGHT', state: false, config: { visible: true, color: '#e2bb66' } } }]);
     fixture.detectChanges();
-    expect(fixture.componentInstance.seasons().find((season) => season.id === 'wet')?.active).toBe(
-      true,
-    );
+    expect(fixture.nativeElement.querySelector('.indicator-name')?.textContent).toContain('drought');
+    expect(fixture.nativeElement.querySelector('.indicator-name small')?.textContent).toContain('INATIVO');
     fixture.destroy();
     expect(secondAdapters.observed).toBe(false);
+    expect(secondConfigurations.observed).toBe(false);
   });
 
-  it('renders live data and read errors', async () => {
-    const adapters = new Subject<unknown[]>();
-    const levers = new Subject<unknown[]>();
-    const update = vi.fn().mockResolvedValue(undefined);
-    await TestBed.configureTestingModule({
-      imports: [Dashboard],
-      providers: [
-        { provide: AdaptersService, useValue: { watchList: () => adapters } },
-        { provide: LeversService, useValue: { watchList: () => levers, update } },
-        {
-          provide: ColoniesService,
-          useValue: {
-            selectedId: signal('first'),
-            state: signal({
-              data: [{ id: 'first', data: { colonyInfo: { settlementName: 'First' } } }],
-              loading: false,
-              error: '',
-            }),
-            select: vi.fn(),
-          },
-        },
-      ],
-    }).compileComponents();
+  it('keeps indicator configuration writes separate from adapter and lever writes', async () => {
+    const selectedId = signal('first');
+    const updateConfiguration = vi.fn().mockResolvedValue(undefined);
+    const updateLever = vi.fn().mockResolvedValue(undefined);
+    await TestBed.configureTestingModule({ imports: [Dashboard], providers: [
+      { provide: AdaptersService, useValue: { watchList: () => of([]) } },
+      { provide: IndicatorConfigurationsService, useValue: { watchList: () => of([]), update: updateConfiguration } },
+      { provide: LeversService, useValue: { watchList: () => of([]), update: updateLever } },
+      { provide: ColoniesService, useValue: {
+        selectedId,
+        state: signal({ data: [{ id: 'first', data: { colonyInfo: { settlementId: 'first', settlementName: 'First' } } }], loading: false, error: '' }),
+        select: (id: string) => selectedId.set(id),
+      } },
+    ] }).compileComponents();
+
     const fixture = TestBed.createComponent(Dashboard);
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(fixture.nativeElement.textContent).toContain('Carregando');
-
-    adapters.next([{ id: 'BADWATER', data: { name: 'BADWATER_ADPTER', state: false } }]);
-    levers.next([]);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.season-status').textContent).toContain(
-      'Sem sinal',
-    );
-
-    adapters.next([{ id: 'BADWATER', data: { name: 'BADWATER_ADPTER', state: true } }]);
-    fixture.detectChanges();
-    expect(
-      fixture.nativeElement.querySelector('.season.badwater').classList.contains('is-active'),
-    ).toBe(true);
-
-    levers.next([{ id: 'gate', data: { name: 'Gate', state: false } }]);
-    fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
-    expect(button.getAttribute('aria-pressed')).toBe('false');
-    expect(button.querySelector('.fa-toggle-on, .fa-toggle-off')).toBeNull();
-    button.click();
-    await fixture.whenStable();
-    expect(update).toHaveBeenCalledWith('gate', { state: true });
-
-    update.mockRejectedValueOnce(new Error('write-denied'));
-    await fixture.componentInstance.toggleLever('gate', true);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('write-denied');
-
-    levers.error(new Error('permission-denied'));
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('permission-denied');
-    fixture.destroy();
-    expect(adapters.observed).toBe(false);
-  });
-
-  it('renders stock values, clamps fill and filters goods without changing the source', async () => {
-    const goods = [
-      { id: 'Water', name: 'Water', type: 'Liquid', stock: 120, capacity: 100 },
-      { id: 'Log', name: 'Log', type: 'Pileable', stock: 20, capacity: 100 },
-      { id: 'Corn', name: 'Corn', type: 'Box', stock: 0, capacity: 0 },
-      { id: 'SunflowerSeeds', name: 'Sunflower seeds', type: 'Box', stock: 15, capacity: 30 },
-    ];
-    await TestBed.configureTestingModule({
-      imports: [Dashboard],
-      providers: [
-        { provide: AdaptersService, useValue: { watchList: () => of([]) } },
-        { provide: LeversService, useValue: { watchList: () => of([]) } },
-        {
-          provide: ColoniesService,
-          useValue: {
-            selectedId: signal('first'),
-            state: signal({
-              data: [
-                {
-                  id: 'first',
-                  data: {
-                    colonyInfo: { settlementName: 'Esgaroth' },
-                    resources: { goods, stockAvailable: true },
-                    population: { total: 200, adults: 150, children: 10, bots: 40 },
-                    powerGrid: { networks: [{ powerSupply: 500, powerDemand: 300 }] },
-                  },
-                },
-              ],
-              loading: false,
-              error: '',
-            }),
-            select: vi.fn(),
-          },
-        },
-      ],
-    }).compileComponents();
-    const fixture = TestBed.createComponent(Dashboard);
-    fixture.detectChanges();
-    await fixture.whenStable();
-    const dashboard = fixture.componentInstance;
-    expect(dashboard.fill(goods[0])).toBe(100);
-    expect(dashboard.fill(goods[2])).toBe(0);
-    expect(fixture.nativeElement.querySelectorAll('.good')).toHaveLength(4);
-    expect(fixture.nativeElement.textContent).toContain('+20 excedente');
-    expect(dashboard.power().supply).toBe(500);
-    expect(dashboard.food()).toEqual({ stock: 15, availableTypes: 1, totalTypes: 1 });
-    expect(dashboard.goodCategory(goods[2])).toBe('industry');
-    expect(dashboard.goodCategory(goods[3])).toBe('food');
-    expect(fixture.nativeElement.querySelector('.population-summary').textContent).toContain('200');
-    expect(fixture.nativeElement.querySelector('.overview').textContent).toContain(
-      'Reserva de alimentos',
-    );
-    expect(fixture.nativeElement.querySelectorAll('.overview-item')).toHaveLength(4);
-
-    dashboard.category.set('water');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelectorAll('.good')).toHaveLength(1);
-    dashboard.category.set('all');
-    dashboard.search.set('log');
-    expect(dashboard.visibleGoods().map((good) => good.id)).toEqual(['Log']);
-    dashboard.search.set('');
-    dashboard.hideEmpty.set(true);
-    expect(dashboard.visibleGoods()).toHaveLength(3);
-    dashboard.goodsSort.set('fill');
-    expect(dashboard.visibleGoods()[0].id).toBe('Log');
-    expect(goods[0].id).toBe('Water');
-    expect(dashboard.seasons().every((season) => !season.known)).toBe(true);
+    await fixture.componentInstance.saveIndicator({ id: 'BADWATER', color: '#ff6655' });
+    await fixture.componentInstance.toggleLever('gate', false);
+    await fixture.componentInstance.removeIndicator('BADWATER');
+    expect(updateConfiguration).toHaveBeenNthCalledWith(1, 'BADWATER', { 'config.visible': true, 'config.color': '#ff6655' });
+    expect(updateLever).toHaveBeenCalledWith('gate', { state: true });
+    expect(updateConfiguration).toHaveBeenNthCalledWith(2, 'BADWATER', { 'config.visible': false });
     fixture.destroy();
   });
 });

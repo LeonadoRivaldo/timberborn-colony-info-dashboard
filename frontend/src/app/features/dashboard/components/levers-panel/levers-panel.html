@@ -1,0 +1,22 @@
+<section class="panel" aria-label="Controles de levers">
+  <div class="section-heading"><h2><i class="fa-solid fa-sliders" aria-hidden="true"></i>Levers</h2><span class="count">{{ levers().length }}</span></div>
+  <div class="rail-summary"><i class="fa-solid fa-circle" aria-hidden="true"></i>{{ activeCount() }} ativas</div>
+  <label class="search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" aria-label="Buscar lever" placeholder="Buscar lever..." [value]="search()" (input)="search.set($any($event.target).value)" /></label>
+  @if (loading()) { <p class="empty" role="status">Carregando...</p> }
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (writeError()) { <p class="error" role="alert">{{ writeError() }}</p> }
+  <ul class="lever-list">
+    @for (lever of visibleLevers(); track lever.id) {
+      <li><button type="button" class="lever-button" [class.is-on]="lever.data['state']"
+        [disabled]="saving().has(lever.id) || loading()" [attr.aria-pressed]="!!lever.data['state']"
+        [attr.aria-label]="(lever.data['state'] ? 'Desativar ' : 'Ativar ') + (lever.data['name'] || lever.id)"
+        [title]="lever.data['name'] || lever.id" (click)="toggle.emit({ id: lever.id, state: !!lever.data['state'] })">
+        <span class="lever-light" aria-hidden="true"></span>
+        <span class="lever-name">{{ displayName(lever.data['name'] || lever.id) }}<small>{{ saving().has(lever.id) ? 'Salvando...' : lever.data['state'] ? 'ON' : 'OFF' }}</small></span>
+      </button></li>
+    } @empty {
+      @if (!loading() && !error()) { <li class="empty">{{ search() ? 'Nenhuma lever encontrada.' : 'Nenhuma lever.' }}</li> }
+    }
+  </ul>
+  <div class="rail-note"><i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i>AUTOMACAO DA COLONIA</div>
+</section>

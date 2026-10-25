@@ -5,13 +5,16 @@
   [class.industry]="category() === 'industry'"
   [class.badwater]="good().id === 'Badwater'"
 >
+  <app-goods-trend class="good-trend" [trend]="good().trend" />
   <div class="good-top">
-    <i class="fa-solid {{ icon() }}" aria-hidden="true"></i>
+    <app-good-icon [goodId]="good().id" [fallbackIcon]="icon()" />
+    <h3>{{ good().name }}</h3>
+  </div>
+  <div class="good-type">
     <span>{{
       good().type === 'Liquid' ? 'LIQUIDO' : good().type === 'Pileable' ? 'PILHA' : 'CAIXA'
     }}</span>
   </div>
-  <h3>{{ good().name }}</h3>
   <div class="good-values">
     <strong>{{ good().stock | number: '1.0-0' }}</strong
     ><span>/ {{ good().capacity | number: '1.0-0' }}</span>
