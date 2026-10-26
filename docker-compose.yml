@@ -1,0 +1,21 @@
+services:
+  colony-info:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 7000
+      WEB_ROOT: /app/frontend
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-service-account.json
+      GAME_API_URL: ${GAME_API_URL:-http://host.docker.internal:7778/api/}
+      COLONY_INFO_API_URL: ${COLONY_INFO_API_URL:-http://host.docker.internal:7777/api/colony-info}
+    ports:
+      - "${COLONY_INFO_PORT:-7000}:7000"
+    volumes:
+      - "${FIREBASE_SERVICE_ACCOUNT_PATH:?Set FIREBASE_SERVICE_ACCOUNT_PATH in the root .env}:/run/secrets/firebase-service-account.json:ro"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

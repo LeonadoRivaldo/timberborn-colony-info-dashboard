@@ -46,8 +46,31 @@ npm test
 Execute os comandos nesta pasta. `npm start` exige uma compilacao anterior com
 `npm run build`; `npm run dev` executa o TypeScript com reinicio automatico.
 
-O processo escuta apenas em `127.0.0.1`, na `PORT` configurada (`7000` no exemplo).
-O frontend nao usa essas rotas: acessa o Firestore diretamente.
+Por padrao, o processo escuta apenas em `127.0.0.1`, na `PORT` configurada.
+Defina `HOST=0.0.0.0` apenas quando precisar receber conexoes externas, como
+dentro do container Docker. O frontend servido junto nao chama endpoints do
+backend para dados: o browser acessa Firestore diretamente.
+
+Quando `WEB_ROOT` aponta para uma pasta de build Angular, Fastify serve os
+arquivos estaticos e usa `index.html` como fallback para rotas do cliente, como
+`/login` e `/manage`. Rotas de API inexistentes continuam respondendo 404.
+
+## Docker
+
+O repositorio fornece um `Dockerfile` multi-stage e um `docker-compose.yml` com
+um unico servico. O build Angular e copiado para a imagem final, sem incluir
+`node_modules` de desenvolvimento, arquivos `.env` ou credenciais.
+
+No Compose, `backend/.env` fornece `FIREBASE_PROJECT_ID`. O `.env` da raiz,
+copiado de `docker.env.example`, define `FIREBASE_SERVICE_ACCOUNT_PATH` no host,
+a porta publicada e, opcionalmente, as URLs de APIs do jogo. O JSON e montado
+em `/run/secrets/firebase-service-account.json` como somente leitura.
+
+O container escuta em `0.0.0.0:7000`; Compose publica `7000` por padrao. As URLs
+default para APIs do jogo usam `host.docker.internal:7777` e `:7778`, pois o jogo
+permanece no Windows. Confirme que o Docker Desktop/WSL consegue alcancar essas
+portas no host. O Dockerfile nao contem credenciais nem configuracao especifica
+de uma maquina.
 
 ## Endpoints
 

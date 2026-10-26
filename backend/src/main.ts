@@ -48,7 +48,8 @@ process.once('SIGINT', () => void shutdown());
 process.once('SIGTERM', () => void shutdown());
 
 try {
-  await app.listen({ host: '127.0.0.1', port: environment.port });
+  const host = process.env['HOST']?.trim() || '127.0.0.1';
+  await app.listen({ host, port: environment.port });
   polling.start();
 } catch (error) {
   app.log.error(error);

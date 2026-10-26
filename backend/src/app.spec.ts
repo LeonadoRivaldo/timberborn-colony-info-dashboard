@@ -1,3 +1,6 @@
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { createApp } from './app.js';
 import { AdaptersWebhookController } from './core/controllers/adapters-webhook.controler.js';
@@ -42,6 +45,38 @@ describe('local application', () => {
       expect((await app.inject({ method: 'GET', url: '/goods' })).statusCode).toBe(404);
     } finally {
       await app.close();
+    }
+  });
+
+  it('serves frontend assets and falls back to the Angular app routes', async () => {
+    const webRoot = await mkdtemp(join(tmpdir(), 'colony-info-web-'));
+    const previousWebRoot = process.env['WEB_ROOT'];
+    await mkdir(join(webRoot, 'assets'));
+    await writeFile(join(webRoot, 'index.html'), '<main>Angular app</main>');
+    await writeFile(join(webRoot, 'assets', 'app.js'), 'globalThis.appLoaded = true;');
+    process.env['WEB_ROOT'] = webRoot;
+    const app = createTestApp();
+
+    try {
+      const home = await app.inject({ method: 'GET', url: '/', headers: { accept: 'text/html' } });
+      expect(home.statusCode).toBe(200);
+      expect(home.body).toContain('Angular app');
+
+      const route = await app.inject({ method: 'GET', url: '/login', headers: { accept: 'text/html' } });
+      expect(route.statusCode).toBe(200);
+      expect(route.body).toContain('Angular app');
+
+      const asset = await app.inject({ method: 'GET', url: '/assets/app.js' });
+      expect(asset.statusCode).toBe(200);
+      expect(asset.body).toContain('appLoaded');
+
+      const missingApi = await app.inject({ method: 'GET', url: '/adapters/unknown', headers: { accept: 'text/html' } });
+      expect(missingApi.statusCode).toBe(404);
+    } finally {
+      await app.close();
+      if (previousWebRoot === undefined) delete process.env['WEB_ROOT'];
+      else process.env['WEB_ROOT'] = previousWebRoot;
+      await rm(webRoot, { recursive: true, force: true });
     }
   });
 
