@@ -1,0 +1,48 @@
+:host { --line: #3c4c40; --gold: #d2bc7b; --muted: #a3b1a6; --text: #edf0e6; --green: #8fc79a; display: flex; flex-direction: column; height: 100%; min-height: 0; color: var(--text); background: #13201e; font-size: 13px; }
+.page-header { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 18px 28px; background: #101c19; border-bottom: 1px solid var(--line); }
+h1 { font-size: 20px; margin: 0; }
+h2 { font-size: 13px; margin: 0 0 10px; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
+.back-link { color: var(--gold); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; }
+.back-link:hover { color: var(--text); }
+.faction-picker { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+label { color: var(--muted); font-size: 11px; }
+select, input { min-height: 34px; min-width: 0; border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; background: #172420; color: var(--text); font: inherit; }
+input { width: 90px; }
+main { flex: 1; min-height: 0; padding: 20px 28px; overflow: auto; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.toolbar p { margin: 0; color: var(--muted); font-size: 12px; }
+.add-button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border: 1px solid var(--gold); border-radius: 4px; background: transparent; color: var(--gold); cursor: pointer; }
+.add-button:hover { background: #2a2a1c; }
+.table-wrapper { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 10px 12px; text-align: left; font: 600 11px 'IBM Plex Mono', monospace; color: var(--muted); text-transform: uppercase; background: #101c19; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid #293b30; vertical-align: middle; }
+.numeric { font-family: 'IBM Plex Mono', monospace; text-align: right; white-space: nowrap; }
+.strong { color: var(--green); font-weight: 700; }
+.muted { color: var(--muted); }
+.empty { text-align: center; padding: 28px; }
+.good-select, .good-name { display: inline-flex; align-items: center; gap: 8px; }
+.good-select select { min-width: 180px; }
+.recipe-summary { display: flex; flex-direction: column; gap: 4px; }
+.recipe-summary > span:first-of-type { color: var(--muted); font-size: 11px; }
+.ingredients { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { --good-icon-size: 18px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 2px 4px; border: 1px solid #2f4236; border-radius: 12px; background: #172420; font-size: 11px; white-space: nowrap; }
+.chip.fuel { border-color: #5a4c2a; }
+.actions { white-space: nowrap; text-align: right; }
+.actions button { width: 32px; height: 32px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+.actions button:hover:not(:disabled) { color: var(--text); background: #22332b; }
+.actions button.remove:hover { color: #f0b4a7; background: #342828; }
+.actions button:disabled { opacity: .35; cursor: default; }
+.row-details > td { padding: 0; background: #0f1a17; }
+.details { display: grid; grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); gap: 24px; padding: 16px 18px 18px; }
+.chain { border: 1px solid #293b30; }
+.chain th { background: #13201e; }
+.chain td { padding: 7px 10px; }
+.chain select { max-width: 320px; }
+.chain tfoot td { font-weight: 700; border-bottom: 0; }
+.raw ul { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow: auto; }
+.raw li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 36px; border-bottom: 1px solid #293b30; }
+.warning { margin: 10px 0 0; padding: 8px 10px; border-left: 2px solid var(--gold); color: var(--gold); background: #2a2a1c; font-size: 12px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 900px) { .details { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .page-header { padding: 12px 16px; gap: 12px; } h1 { font-size: 18px; } .faction-picker { width: 100%; margin: 0; } main { padding: 16px; } .toolbar { flex-direction: column; align-items: stretch; } }
