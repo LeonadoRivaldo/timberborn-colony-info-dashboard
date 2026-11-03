@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import type { ConfiguredIndicator, IndicatorConfiguration, IndicatorDocument } from '../../../../core/models/indicator-configuration.model';
-import type { StoredDocument } from '../../../../core/services/firestore/firestore.repository';
+import type { AutomationDocument } from '../../../../core/models/automation.model';
+import type { ConfiguredIndicator, IndicatorConfiguration } from '../../../../core/models/indicator-configuration.model';
+import type { StoredDocument } from '../../../../core/models/stored-document.model';
 import { IndicatorCard } from './indicator-card';
 
 @Component({
@@ -12,7 +13,7 @@ import { IndicatorCard } from './indicator-card';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IndicatorsPanel {
-  readonly configurations = input<StoredDocument<IndicatorDocument>[]>([]);
+  readonly configurations = input<StoredDocument<AutomationDocument>[]>([]);
   readonly configurationsLoading = input(false);
   readonly configurationsError = input('');
   readonly saveError = input('');

@@ -14,6 +14,34 @@ npm test -- --watch=false
 npm run build -- --base-href /colony-info/
 ```
 
+## Timberborn Static Build
+
+The separate `timberborn` build has no Firebase, login, or colony selector. It
+polls `/api/colony-info`, `/api/adapters`, and `/api/levers` every five seconds.
+Indicator visibility and colors are stored in the browser's local storage.
+
+The mod server serves the static app and proxies the game API on the same origin,
+so browser CORS restrictions do not block lever reads or commands. The proxy
+targets the Timberborn HTTP API on `localhost:7778`.
+
+Build the static files with:
+
+```sh
+npm run build:timberborn
+```
+
+To copy the build into the mod package, pass the mod's
+`Assets/Mods/TimberColonyInfo` directory:
+
+```sh
+npm run package:timberborn-mod -- ../../MODS/timberborn-modding-main/Assets/Mods/TimberColonyInfo
+```
+
+The static output is written to `dist/colony-info-timberborn/browser` and copied
+to `Root/colony-info`; the Timberborn mod builder then includes it in the mod.
+The mod server must be rebuilt and enabled in-game for the UI and proxy routes
+to be available.
+
 ## Firebase
 
 1. Crie um projeto e registre um aplicativo Web no console Firebase.

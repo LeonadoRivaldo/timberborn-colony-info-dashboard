@@ -9,6 +9,7 @@
     </div>
   </section>
   <app-season-card [adapters]="adapters()" [loading]="adaptersLoading()" />
+  @if (!staticMode()) {
   <div class="colony-picker">
     <label for="colony">COLONIA</label>
     <select id="colony" [value]="colonyId()" [disabled]="!colonies().length || leverSaving().size > 0" (change)="selectColony.emit($any($event.target).value)">
@@ -16,13 +17,14 @@
       @if (!colonies().length) { <option value="">Nenhuma colonia</option> }
     </select>
   </div>
+  }
   <div class="sync-state"><i class="fa-solid fa-clock" aria-hidden="true"></i>@if (colony()?.timestamp) { <span>Snapshot {{ colony()?.timestamp | date:'HH:mm:ss' }}</span> } @else { <span>Aguardando snapshot</span> }</div>
-  <button type="button" class="side-panel-button" aria-haspopup="dialog" [attr.aria-expanded]="eventLogOpen()" (click)="eventLogOpen.set(true)"><i class="fa-solid fa-list-ul" aria-hidden="true"></i>Event log</button>
-  <a routerLink="/production" class="side-panel-button" style="text-decoration: none"><i class="fa-solid fa-industry" aria-hidden="true"></i>Producao</a>
-  <a routerLink="/manage" class="side-panel-button" style="text-decoration: none"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Gerenciar</a>
+  @if (!staticMode()) {
+    <button type="button" class="side-panel-button" aria-haspopup="dialog" [attr.aria-expanded]="eventLogOpen()" (click)="openEventLog.emit()"><i class="fa-solid fa-list-ul" aria-hidden="true"></i>Event log</button>
+    <a routerLink="/production" class="side-panel-button" style="text-decoration: none"><i class="fa-solid fa-industry" aria-hidden="true"></i>Producao</a>
+    <a routerLink="/manage" class="side-panel-button" style="text-decoration: none"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Gerenciar</a>
+  }
 </header>
-
-@if (eventLogOpen()) { <app-event-log (closed)="eventLogOpen.set(false)" /> }
 
 <div class="layout">
   <button type="button" class="drawer-backdrop" [class.visible]="activeDrawer() !== null" aria-label="Fechar painel lateral" (click)="closeDrawer()"></button>

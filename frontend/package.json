@@ -7,6 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "build:timberborn": "ng build --configuration production,timberborn",
+    "package:timberborn-mod": "npm run build:timberborn && node scripts/package-timberborn-mod.mjs",
     "export:production": "node scripts/export-production-data.mjs"
   },
   "private": true,

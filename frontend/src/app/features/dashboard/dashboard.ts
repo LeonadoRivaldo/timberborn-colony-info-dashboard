@@ -2,14 +2,15 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
-import type { DocumentData } from 'firebase/firestore';
+import type { AutomationDocument } from '../../core/models/automation.model';
 import type { ColonyDocument } from '../../core/models/colony.model';
 import type { IndicatorConfiguration } from '../../core/models/indicator-configuration.model';
-import type { StoredDocument } from '../../core/services/firestore/firestore.repository';
+import type { StoredDocument } from '../../core/models/stored-document.model';
 import { AdaptersService } from '../../core/services/adapters/adapters.service';
 import { ColoniesService } from '../../core/services/colonies/colonies.service';
 import { IndicatorConfigurationsService } from '../../core/services/indicators/indicator-configurations.service';
 import { LeversService } from '../../core/services/levers/levers.service';
+import { EventLog } from './components/event-log/event-log';
 import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
 import { GoodsPanel } from './components/goods-panel/goods-panel';
 import { SummaryPanel } from './components/summary-panel/summary-panel';
@@ -36,11 +37,12 @@ function observeCollection<T>(selection: Observable<string>, read: () => Observa
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DashboardShell, SummaryPanel, GoodsPanel],
+  imports: [DashboardShell, SummaryPanel, GoodsPanel, EventLog],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
+  readonly eventLogOpen = signal(false);
   readonly colonies: ColoniesService = inject(ColoniesService);
   private readonly selection = toObservable(this.colonies.selectedId);
   private readonly adaptersService = inject(AdaptersService);
@@ -49,9 +51,9 @@ export class Dashboard {
 
   readonly colony = computed(() => this.colonies.state().data
     .find((item) => item.id === this.colonies.selectedId())?.data);
-  readonly adapters = observeCollection(this.selection, () => this.adaptersService.watchList());
+  readonly adapters = observeCollection<AutomationDocument>(this.selection, () => this.adaptersService.watchList());
   readonly indicatorConfigurations = observeCollection(this.selection, () => this.indicatorsService.watchList());
-  readonly levers = observeCollection(this.selection, () => this.leversService.watchList());
+  readonly levers = observeCollection<AutomationDocument>(this.selection, () => this.leversService.watchList());
   readonly savingLevers = signal<ReadonlySet<string>>(new Set());
   readonly leverWriteError = signal('');
   readonly indicatorWriteError = signal('');

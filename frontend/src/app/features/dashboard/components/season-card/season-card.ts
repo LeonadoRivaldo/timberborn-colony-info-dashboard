@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import type { DocumentData } from 'firebase/firestore';
-import type { StoredDocument } from '../../../../core/services/firestore/firestore.repository';
+import type { AutomationDocument } from '../../../../core/models/automation.model';
+import type { StoredDocument } from '../../../../core/models/stored-document.model';
 import { normalizeIndicatorName } from '../../../../core/utils/normalize-indicator-name';
 import { StatusCard } from '../../../../core/status-card/status-card';
 
@@ -18,9 +18,9 @@ const SEASONS = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeasonCard {
-  readonly adapters = input<StoredDocument<DocumentData>[]>([]);
+  readonly adapters = input<StoredDocument<AutomationDocument>[]>([]);
   readonly loading = input(false);
   readonly season = computed(() => SEASONS.find(season => this.adapters().some(adapter =>
-    adapter.data['state'] === true && season.names.includes(normalizeIndicatorName(String(adapter.data['name'] ?? adapter.id))),
+    adapter.data.state === true && season.names.includes(normalizeIndicatorName(String(adapter.data.name ?? adapter.id))),
   )));
 }

@@ -6,11 +6,8 @@ import {
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { FIREBASE_CLIENT } from '../firebase/firebase-client';
-
-export interface StoredDocument<T> {
-  readonly id: string;
-  readonly data: T;
-}
+import type { StoredDocument } from '../../models/stored-document.model';
+export type { StoredDocument } from '../../models/stored-document.model';
 
 export abstract class FirestoreRepository<T extends DocumentData> {
   private readonly client = inject(FIREBASE_CLIENT);

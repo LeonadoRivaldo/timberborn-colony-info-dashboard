@@ -58,6 +58,17 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "timberborn": {
+              "browser": "src/main.timberborn.ts",
+              "outputPath": "dist/colony-info-timberborn",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public",
+                  "ignore": ["firebase-config.json"]
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"

@@ -1,3 +1,4 @@
+@if (eventLogOpen()) { <app-event-log (closed)="eventLogOpen.set(false)" /> }
 <app-dashboard-shell
   [colonies]="colonies.state().data.map((item) => item.data)"
   [colonyId]="colonies.selectedId()"
@@ -14,10 +15,12 @@
   [leversError]="levers().error"
   [leverSaving]="savingLevers()"
   [leverWriteError]="leverWriteError()"
+  [eventLogOpen]="eventLogOpen()"
   [colonyLoading]="colonies.state().loading"
   [colonyError]="colonies.state().error"
   (toggleLever)="toggleLever($event.id, $event.state)"
   (selectColony)="selectColony($event)"
+  (openEventLog)="eventLogOpen.set(true)"
   (saveIndicator)="saveIndicator($event)"
   (removeIndicator)="removeIndicator($event)"
 >
