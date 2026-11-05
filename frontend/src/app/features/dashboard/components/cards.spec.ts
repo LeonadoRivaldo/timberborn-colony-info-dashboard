@@ -107,4 +107,23 @@ describe('Dashboard panels and cards', () => {
     fixture.componentInstance.save();
     expect(saved).toEqual([{ id: 'WET_SEASON', color: '#e2bb66' }]);
   });
+
+  it('shows every adapter read-only in the Timberborn indicators panel', async () => {
+    await TestBed.configureTestingModule({ imports: [IndicatorsPanel] }).compileComponents();
+    const fixture = TestBed.createComponent(IndicatorsPanel);
+    fixture.componentRef.setInput('readOnlyMode', true);
+    fixture.componentRef.setInput('configurations', [
+      { id: 'CUSTOM_VALUE', data: { name: 'CUSTOM_VALUE', state: true } },
+      { id: 'PUMP_LEVER', data: { name: 'PUMP_LEVER', state: false } },
+    ]);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('app-indicator-card')).toHaveLength(2);
+    expect(fixture.nativeElement.textContent).toContain('custom value');
+    expect(fixture.nativeElement.textContent).toContain('pump lever');
+    expect(fixture.nativeElement.querySelector('.active-filter')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.new-indicator-button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.remove-button')).toBeNull();
+    fixture.destroy();
+  });
 });

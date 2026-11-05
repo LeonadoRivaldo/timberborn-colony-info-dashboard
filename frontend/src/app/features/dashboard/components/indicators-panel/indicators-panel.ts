@@ -17,6 +17,7 @@ export class IndicatorsPanel {
   readonly configurationsLoading = input(false);
   readonly configurationsError = input('');
   readonly saveError = input('');
+  readonly readOnlyMode = input(false);
   readonly saveConfiguration = output<IndicatorConfiguration>();
   readonly removeConfiguration = output<string>();
   readonly showActiveOnly = signal(true);
@@ -27,6 +28,15 @@ export class IndicatorsPanel {
   readonly availableIndicators = computed(() => this.configurations().filter(({ data }) => data.config?.visible !== true));
 
   readonly indicators = computed<ConfiguredIndicator[]>(() => {
+    if (this.readOnlyMode()) {
+      return this.configurations().map(({ id, data }) => ({
+        id,
+        name: this.displayName(data.name ?? id),
+        color: /^#[\da-f]{6}$/i.test(data.config?.color ?? '') ? (data.config?.color ?? '#80c9bc') : '#80c9bc',
+        state: data.state === true,
+      }));
+    }
+
     return this.configurations().flatMap(({ id, data }) => {
       if (data.config?.visible !== true) return [];
       const indicator: ConfiguredIndicator = {

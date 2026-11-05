@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import type { IndicatorConfiguration } from '../../core/models/indicator-configuration.model';
 import { TimberbornDataFacade } from '../../core/services/timberborn/timberborn-data.facade';
 import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
 import { GoodsPanel } from './components/goods-panel/goods-panel';
@@ -47,11 +46,4 @@ export class TimberbornDashboard {
     }
   }
 
-  saveIndicator(configuration: IndicatorConfiguration): void {
-    this.data.saveIndicator(configuration);
-  }
-
-  removeIndicator(id: string): void {
-    this.data.removeIndicator(id);
-  }
 }

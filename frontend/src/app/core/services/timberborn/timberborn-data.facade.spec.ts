@@ -26,11 +26,12 @@ describe('TimberbornDataFacade', () => {
     localStorage.clear();
   });
 
-  it('routes adapters and indicators to the adapter endpoint and classifies entries', () => {
+  it('returns every adapter to both the adapters and indicators views without naming conventions', () => {
     get.mockReturnValue(of([
       { name: 'BADWATER_ADPTER', state: true },
       { name: 'RESERVOIR_INDICATOR', state: true },
       { name: 'PUMP_LEVER', state: true },
+      { name: 'CUSTOM VALUE', state: false },
     ]));
     let adapterData: unknown;
     let indicatorData: unknown;
@@ -40,11 +41,14 @@ describe('TimberbornDataFacade', () => {
 
     expect(get).toHaveBeenCalledTimes(1);
     expect(get).toHaveBeenCalledWith('/api/adapters');
-    expect(adapterData).toEqual([{ id: 'BADWATER_ADPTER', data: { name: 'BADWATER_ADPTER', state: true } }]);
-    expect(indicatorData).toEqual([{
-      id: 'RESERVOIR_INDICATOR',
-      data: { name: 'RESERVOIR', state: true, config: { visible: false } },
-    }]);
+    const expected = [
+      { id: 'BADWATER_ADPTER', data: { name: 'BADWATER_ADPTER', state: true } },
+      { id: 'RESERVOIR_INDICATOR', data: { name: 'RESERVOIR_INDICATOR', state: true } },
+      { id: 'PUMP_LEVER', data: { name: 'PUMP_LEVER', state: true } },
+      { id: 'CUSTOM VALUE', data: { name: 'CUSTOM VALUE', state: false } },
+    ];
+    expect(adapterData).toEqual(expected);
+    expect(indicatorData).toEqual(expected);
 
     adaptersSubscription.unsubscribe();
     indicatorsSubscription.unsubscribe();
@@ -75,12 +79,4 @@ describe('TimberbornDataFacade', () => {
     subscription.unsubscribe();
   });
 
-  it('persists indicator visibility and color in browser storage', () => {
-    facade.saveIndicator({ id: 'RESERVOIR_INDICATOR', color: '#80c9bc' });
-    facade.removeIndicator('RESERVOIR_INDICATOR');
-
-    expect(JSON.parse(localStorage.getItem('colony-info.indicator-preferences') ?? '{}')).toEqual({
-      RESERVOIR_INDICATOR: { visible: false, color: '#80c9bc' },
-    });
-  });
 });

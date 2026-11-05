@@ -8,7 +8,7 @@ import type { ConfiguredIndicator } from '../../../../core/models/indicator-conf
     <li class="indicator-row">
       <span class="indicator-light" [class.active]="indicator().state" [style.--indicator-color]="indicator().color" aria-hidden="true"></span>
       <span class="indicator-name">{{ indicator().name }}<small>{{ indicator().state ? 'ATIVO' : 'INATIVO' }}</small></span>
-      <button type="button" class="remove-button" [attr.aria-label]="'Remover configuracao ' + indicator().name" title="Remover indicator" (click)="remove.emit(indicator().id)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      @if (!readOnlyMode()) { <button type="button" class="remove-button" [attr.aria-label]="'Remover configuracao ' + indicator().name" title="Remover indicator" (click)="remove.emit(indicator().id)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button> }
     </li>
   `,
   styleUrl: './indicator-card.scss',
@@ -16,5 +16,6 @@ import type { ConfiguredIndicator } from '../../../../core/models/indicator-conf
 })
 export class IndicatorCard {
   readonly indicator = input.required<ConfiguredIndicator>();
+  readonly readOnlyMode = input(false);
   readonly remove = output<string>();
 }

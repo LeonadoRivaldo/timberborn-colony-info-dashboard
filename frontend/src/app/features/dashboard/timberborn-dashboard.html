@@ -16,8 +16,6 @@
   [colonyLoading]="colonyState().loading"
   [colonyError]="colonyState().error"
   (toggleLever)="toggleLever($event.id, $event.state)"
-  (saveIndicator)="saveIndicator($event)"
-  (removeIndicator)="removeIndicator($event)"
 >
   <app-summary-panel dashboard-summary [colony]="colony()" />
   <app-goods-panel

@@ -37,5 +37,5 @@
     <div class="goods-slot"><ng-content select="[dashboard-goods]" /></div>
     <footer class="dashboard-footer"><span>COLONY INFO / TIMBERBORN</span><span>@if (colony()?.timestamp) { ULTIMA LEITURA {{ colony()?.timestamp | date:'dd/MM HH:mm:ss' }} } @else { SEM LEITURA } · SNAPSHOTS A CADA 120 S</span></footer>
   </main>
-  <app-indicators-panel class="right-rail" [class.drawer-open]="activeDrawer() === 'indicators'" [configurations]="indicatorConfigurations()" [configurationsLoading]="indicatorsLoading()" [configurationsError]="indicatorsError()" [saveError]="indicatorSaveError()" (saveConfiguration)="saveIndicator.emit($event)" (removeConfiguration)="removeIndicator.emit($event)" />
+  <app-indicators-panel class="right-rail" [class.drawer-open]="activeDrawer() === 'indicators'" [configurations]="indicatorConfigurations()" [configurationsLoading]="indicatorsLoading()" [configurationsError]="indicatorsError()" [saveError]="indicatorSaveError()" [readOnlyMode]="staticMode()" (saveConfiguration)="saveIndicator.emit($event)" (removeConfiguration)="removeIndicator.emit($event)" />
 </div>
