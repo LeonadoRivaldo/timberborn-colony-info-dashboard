@@ -1,30 +1,31 @@
 <header class="page-header">
-  <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>Dashboard</a>
-  <h1>Calculadora de producao</h1>
+  <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>{{ 'common.dashboard' | translate }}</a>
+  <h1>{{ 'production.title' | translate }}</h1>
   <div class="faction-picker">
-    <label for="production-faction">Faccao</label>
+    <label for="production-faction">{{ 'production.faction' | translate }}</label>
     <select id="production-faction" [value]="faction()" (change)="selectFaction($any($event.target).value)">
-      @for (item of factions; track item) { <option [value]="item">{{ humanize(item) }}</option> }
+      @for (item of factions; track item) { <option [value]="item">{{ (item === 'Folktails' ? 'production.folktails' : 'production.ironTeeth') | translate }}</option> }
     </select>
   </div>
+  <app-language-switcher />
 </header>
 <main>
   <div class="toolbar">
-    <p>Dados do Timberborn {{ gameVersion }}. Considera predios com todos os trabalhadores.</p>
-    <button type="button" class="add-button" (click)="addRow()"><i class="fa-solid fa-plus" aria-hidden="true"></i>Adicionar linha</button>
+    <p>{{ 'production.dataNote' | translate: { version: gameVersion } }}</p>
+    <button type="button" class="add-button" (click)="addRow()"><i class="fa-solid fa-plus" aria-hidden="true"></i>{{ 'production.addRow' | translate }}</button>
   </div>
 
   <div class="table-wrapper">
     <table>
       <thead>
         <tr>
-          <th scope="col">Produto</th>
-          <th scope="col">Quantidade</th>
-          <th scope="col">Prazo (h)</th>
-          <th scope="col">Receita</th>
-          <th scope="col">Predios</th>
-          <th scope="col">Cadeia minima</th>
-          <th scope="col"><span class="visually-hidden">Acoes</span></th>
+          <th scope="col">{{ 'production.product' | translate }}</th>
+          <th scope="col">{{ 'production.quantity' | translate }}</th>
+          <th scope="col">{{ 'production.deadline' | translate }}</th>
+          <th scope="col">{{ 'production.recipe' | translate }}</th>
+          <th scope="col">{{ 'production.buildings' | translate }}</th>
+          <th scope="col">{{ 'production.minimumChain' | translate }}</th>
+          <th scope="col"><span class="visually-hidden">{{ 'production.actions' | translate }}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -33,35 +34,35 @@
             <td>
               <div class="good-select">
                 @if (item.row.goodId) { <app-good-icon [goodId]="item.row.goodId" fallbackIcon="fa-robot" /> }
-                <select [value]="item.row.goodId" [attr.aria-label]="'Produto da linha ' + item.row.id" (change)="updateGood(item.row.id, $any($event.target).value)">
-                  <option value="">Selecione...</option>
+                <select [value]="item.row.goodId" [attr.aria-label]="'production.rowProduct' | translate: { id: item.row.id }" (change)="updateGood(item.row.id, $any($event.target).value)">
+                  <option value="">{{ 'production.select' | translate }}</option>
                   @for (good of goods(); track good) { <option [value]="good">{{ humanize(good) }}</option> }
                 </select>
               </div>
             </td>
-            <td><input type="number" min="1" step="1" [value]="item.row.quantity" [attr.aria-label]="'Quantidade da linha ' + item.row.id" (change)="updateNumber(item.row.id, 'quantity', $any($event.target).value)"></td>
-            <td><input type="number" min="0.1" step="0.5" [value]="item.row.hours" [attr.aria-label]="'Prazo em horas da linha ' + item.row.id" (change)="updateNumber(item.row.id, 'hours', $any($event.target).value)"></td>
+            <td><input type="number" min="1" step="1" [value]="item.row.quantity" [attr.aria-label]="'production.rowQuantity' | translate: { id: item.row.id }" (change)="updateNumber(item.row.id, 'quantity', $any($event.target).value)"></td>
+            <td><input type="number" min="0.1" step="0.5" [value]="item.row.hours" [attr.aria-label]="'production.rowTime' | translate: { id: item.row.id }" (change)="updateNumber(item.row.id, 'hours', $any($event.target).value)"></td>
             <td>
               @if (item.row.goodId && primaryOption(item.row.goodId, item.row.recipeChoices); as option) {
                 <div class="recipe-summary">
                   <strong>{{ humanize(option.building.id) }}</strong>
-                  <span>{{ formatNumber(cycleHours(option)) }} h/ciclo · {{ option.building.maxWorkers || 1 }} trab.</span>
+                  <span>{{ 'production.hoursPerCycle' | translate: { hours: formatNumber(cycleHours(option)), workers: option.building.maxWorkers || 1 } }}</span>
                   <span class="ingredients">
                     @for (ingredient of option.recipe.ingredients; track ingredient.id) {
-                      <span class="chip"><app-good-icon [goodId]="ingredient.id" />{{ ingredient.amount }} {{ humanize(ingredient.id) }}</span>
-                    } @empty { <span class="muted">Sem insumos</span> }
+                      <span class="chip"><app-good-icon [goodId]="ingredient.id" />{{ formatNumber(ingredient.amount) }} {{ humanize(ingredient.id) }}</span>
+                    } @empty { <span class="muted">{{ 'production.noInputs' | translate }}</span> }
                     @if (option.recipe.fuel; as fuel) {
-                      <span class="chip fuel"><app-good-icon [goodId]="fuel.id" />1 {{ humanize(fuel.id) }} / {{ fuel.cyclesPerUnit }} ciclos</span>
+                      <span class="chip fuel"><app-good-icon [goodId]="fuel.id" />{{ 'production.fuelPerCycles' | translate: { good: humanize(fuel.id), cycles: fuel.cyclesPerUnit } }}</span>
                     }
                   </span>
                 </div>
               } @else { <span class="muted">--</span> }
             </td>
-            <td class="numeric">{{ item.plan ? item.plan.totalBuildings : '--' }}</td>
+            <td class="numeric">{{ item.plan ? formatNumber(item.plan.totalBuildings) : '--' }}</td>
             <td class="numeric">{{ item.plan ? formatNumber(item.plan.chainHours) + ' h' : '--' }}</td>
             <td class="actions">
-              <button type="button" [disabled]="!item.plan" [attr.aria-expanded]="item.row.expanded" [attr.aria-label]="(item.row.expanded ? 'Recolher' : 'Expandir') + ' cadeia da linha ' + item.row.id" (click)="toggle(item.row.id)"><i class="fa-solid" [class.fa-chevron-up]="item.row.expanded" [class.fa-chevron-down]="!item.row.expanded" aria-hidden="true"></i></button>
-              <button type="button" class="remove" [attr.aria-label]="'Remover linha ' + item.row.id" (click)="removeRow(item.row.id)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+              <button type="button" [disabled]="!item.plan" [attr.aria-expanded]="item.row.expanded" [attr.aria-label]="(item.row.expanded ? 'production.collapse' : 'production.expand') | translate: { id: item.row.id }" (click)="toggle(item.row.id)"><i class="fa-solid" [class.fa-chevron-up]="item.row.expanded" [class.fa-chevron-down]="!item.row.expanded" aria-hidden="true"></i></button>
+              <button type="button" class="remove" [attr.aria-label]="'production.removeRow' | translate: { id: item.row.id }" (click)="removeRow(item.row.id)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </td>
           </tr>
           @if (item.plan && item.row.expanded) {
@@ -69,10 +70,10 @@
               <td colspan="7">
                 <div class="details">
                   <section>
-                    <h2>Linha de producao</h2>
+                    <h2>{{ 'production.line' | translate }}</h2>
                     <table class="chain">
                       <thead>
-                        <tr><th scope="col">Etapa</th><th scope="col">Predio / receita</th><th scope="col">Necessario</th><th scope="col">Ciclos</th><th scope="col">Predios</th><th scope="col">Trabalhadores</th></tr>
+                        <tr><th scope="col">{{ 'production.step' | translate }}</th><th scope="col">{{ 'production.buildingRecipe' | translate }}</th><th scope="col">{{ 'production.required' | translate }}</th><th scope="col">{{ 'production.cycles' | translate }}</th><th scope="col">{{ 'production.buildings' | translate }}</th><th scope="col">{{ 'production.workers' | translate }}</th></tr>
                       </thead>
                       <tbody>
                         @for (step of item.plan.steps; track step.goodId) {
@@ -80,7 +81,7 @@
                             <td><span class="good-name"><app-good-icon [goodId]="step.goodId" fallbackIcon="fa-robot" />{{ humanize(step.goodId) }}</span></td>
                             <td>
                               @if (step.alternatives.length > 1) {
-                                <select [value]="step.option.key" [attr.aria-label]="'Receita para ' + humanize(step.goodId)" (change)="chooseRecipe(item.row.id, step.goodId, $any($event.target).value)">
+                                <select [value]="step.option.key" [attr.aria-label]="'production.recipeFor' | translate: { good: humanize(step.goodId) }" (change)="chooseRecipe(item.row.id, step.goodId, $any($event.target).value)">
                                   @for (alternative of step.alternatives; track alternative.key) {
                                     <option [value]="alternative.key">{{ humanize(alternative.building.id) }} · {{ humanize(alternative.recipe.id) }} · {{ formatNumber(cycleHours(alternative)) }} h</option>
                                   }
@@ -89,37 +90,37 @@
                                 {{ humanize(step.option.building.id) }} · {{ formatNumber(cycleHours(step.option)) }} h
                               }
                             </td>
-                            <td class="numeric">{{ step.unitsNeeded }}</td>
-                            <td class="numeric">{{ step.cycles }}</td>
-                            <td class="numeric strong">{{ step.buildingsNeeded }}</td>
-                            <td class="numeric">{{ step.workersNeeded }}</td>
+                            <td class="numeric">{{ formatNumber(step.unitsNeeded) }}</td>
+                            <td class="numeric">{{ formatNumber(step.cycles) }}</td>
+                            <td class="numeric strong">{{ formatNumber(step.buildingsNeeded) }}</td>
+                            <td class="numeric">{{ formatNumber(step.workersNeeded) }}</td>
                           </tr>
                         }
                       </tbody>
                       <tfoot>
-                        <tr><td colspan="4">Total</td><td class="numeric strong">{{ item.plan.totalBuildings }}</td><td class="numeric">{{ item.plan.totalWorkers }}</td></tr>
+                        <tr><td colspan="4">{{ 'common.total' | translate }}</td><td class="numeric strong">{{ formatNumber(item.plan.totalBuildings) }}</td><td class="numeric">{{ formatNumber(item.plan.totalWorkers) }}</td></tr>
                       </tfoot>
                     </table>
                   </section>
                   <section class="raw">
-                    <h2>Materias-primas</h2>
+                    <h2>{{ 'production.rawMaterials' | translate }}</h2>
                     <ul>
                       @for (material of item.plan.rawMaterials; track material.goodId) {
                         <li>
                           <span class="good-name"><app-good-icon [goodId]="material.goodId" />{{ humanize(material.goodId) }}</span>
-                          <span class="numeric">{{ formatNumber(material.amount) }} total</span>
+                          <span class="numeric">{{ 'production.amountTotal' | translate: { amount: formatNumber(material.amount) } }}</span>
                           <span class="numeric strong">{{ formatNumber(material.perHour) }}/h</span>
                         </li>
-                      } @empty { <li class="muted">Nenhuma materia-prima externa.</li> }
+                      } @empty { <li class="muted">{{ 'production.noneExternal' | translate }}</li> }
                     </ul>
-                    @for (warning of item.plan.warnings; track warning) { <p class="warning" role="status">{{ warning }}</p> }
+                    @for (warning of item.plan.warnings; track warning.key) { <p class="warning" role="status">{{ warning.key | translate: warning.params }}</p> }
                   </section>
                 </div>
               </td>
             </tr>
           }
         } @empty {
-          <tr><td colspan="7" class="muted empty">Adicione uma linha para calcular.</td></tr>
+          <tr><td colspan="7" class="muted empty">{{ 'production.addToCalculate' | translate }}</td></tr>
         }
       </tbody>
     </table>

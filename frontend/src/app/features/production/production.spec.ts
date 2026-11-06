@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { PRODUCTION_CATALOG } from '../../core/models/production-catalog';
 import { Production } from './production';
 import { recipeOptionsByGood } from './production-calculator';
+import { provideI18n } from '../../core/i18n/i18n.providers';
 
 describe('Production calculator page', () => {
   let fixture: ComponentFixture<Production>;
@@ -11,7 +12,7 @@ describe('Production calculator page', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Production],
-      providers: [provideRouter([])],
+      providers: [...provideI18n(), provideRouter([])],
     }).compileComponents();
     fixture = TestBed.createComponent(Production);
     component = fixture.componentInstance;
@@ -34,7 +35,7 @@ describe('Production calculator page', () => {
     expect(plan.rawMaterials.every((material) => material.perHour === material.amount / 72)).toBe(true);
 
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
-    expect(text).toContain('Linha de producao');
+    expect(text).toContain('Production line');
     expect(text).toContain('Bot Assembler');
     expect(text).toContain('/h');
   });

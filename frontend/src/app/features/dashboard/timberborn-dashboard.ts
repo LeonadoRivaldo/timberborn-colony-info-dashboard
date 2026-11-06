@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ErrorMessageService } from '../../core/i18n/error-message.service';
 import { TimberbornDataFacade } from '../../core/services/timberborn/timberborn-data.facade';
 import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
 import { GoodsPanel } from './components/goods-panel/goods-panel';
@@ -13,6 +14,7 @@ import { SummaryPanel } from './components/summary-panel/summary-panel';
 })
 export class TimberbornDashboard {
   private readonly data = inject(TimberbornDataFacade);
+  private readonly errors = inject(ErrorMessageService);
   readonly colonyState = toSignal(this.data.watchColony(), {
     initialValue: { data: null, loading: true, error: '' },
   });
@@ -40,7 +42,7 @@ export class TimberbornDashboard {
     try {
       await this.data.setLeverState(id, !currentState);
     } catch (error: unknown) {
-      this.leverWriteError.set(error instanceof Error ? error.message : String(error));
+      this.leverWriteError.set(this.errors.format(error));
     } finally {
       this.savingLevers.update((ids) => new Set([...ids].filter((savedId) => savedId !== id)));
     }

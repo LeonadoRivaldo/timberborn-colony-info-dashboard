@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_CLIENT } from '../firebase/firebase-client';
 import { AuthService } from './auth.service';
+import { provideI18n } from '../../i18n/i18n.providers';
 
 vi.mock('firebase/auth', () => ({
   onAuthStateChanged: vi.fn(() => vi.fn()),
@@ -14,6 +15,7 @@ describe('AuthService email login', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({ providers: [
+      ...provideI18n(),
       { provide: FIREBASE_CLIENT, useValue: { auth: {} } },
     ] });
   });
@@ -33,7 +35,7 @@ describe('AuthService email login', () => {
     vi.mocked(signInWithEmailAndPassword).mockRejectedValue(new Error('invalid-credential'));
     const service = TestBed.inject(AuthService);
     expect(await service.login('owner@example.com', 'wrong-password')).toBe(false);
-    expect(service.error()).toContain('Verifique email e senha');
+    expect(service.error()).toContain('Could not sign in');
     expect(service.authenticated()).toBe(false);
     expect(service.busy()).toBe(false);
   });

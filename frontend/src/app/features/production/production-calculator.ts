@@ -37,7 +37,7 @@ export interface ProductionPlan {
   readonly totalBuildings: number;
   readonly totalWorkers: number;
   readonly chainHours: number;
-  readonly warnings: readonly string[];
+  readonly warnings: readonly { key: string; params: Record<string, string> }[];
 }
 
 export function recipeOptionsByGood(catalog: ProductionCatalog, faction: Faction): Map<string, RecipeOption[]> {
@@ -70,7 +70,7 @@ export function calculateProduction(catalog: ProductionCatalog, request: Product
   const quantity = Math.max(0, request.quantity);
   const hours = request.hours > 0 ? request.hours : 1;
   const optionsByGood = recipeOptionsByGood(catalog, request.faction);
-  const warnings: string[] = [];
+  const warnings: { key: string; params: Record<string, string> }[] = [];
   const chosen = new Map<string, RecipeOption>();
 
   const pick = (goodId: string): RecipeOption | undefined => {
@@ -104,7 +104,7 @@ export function calculateProduction(catalog: ProductionCatalog, request: Product
 
   for (const goodId of cyclic) {
     chosen.delete(goodId);
-    warnings.push(`${goodId} faz parte de um ciclo de receitas e foi tratado como materia-prima.`);
+    warnings.push({ key: 'production.cycleRawMaterial', params: { good: goodId } });
   }
 
   const demand = new Map<string, number>([[request.goodId, quantity]]);

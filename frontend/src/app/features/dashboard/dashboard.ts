@@ -10,6 +10,7 @@ import { AdaptersService } from '../../core/services/adapters/adapters.service';
 import { ColoniesService } from '../../core/services/colonies/colonies.service';
 import { IndicatorConfigurationsService } from '../../core/services/indicators/indicator-configurations.service';
 import { LeversService } from '../../core/services/levers/levers.service';
+import { ErrorMessageService } from '../../core/i18n/error-message.service';
 import { EventLog } from './components/event-log/event-log';
 import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
 import { GoodsPanel } from './components/goods-panel/goods-panel';
@@ -21,7 +22,7 @@ interface ListState<T> {
   error: string;
 }
 
-function observeCollection<T>(selection: Observable<string>, read: () => Observable<StoredDocument<T>[]>) {
+function observeCollection<T>(selection: Observable<string>, read: () => Observable<StoredDocument<T>[]>, formatError: (error: unknown) => string) {
   return toSignal(selection.pipe(
     switchMap((id) => id ? read().pipe(
       map((data): ListState<StoredDocument<T>> => ({ data, loading: false, error: '' })),
@@ -29,7 +30,7 @@ function observeCollection<T>(selection: Observable<string>, read: () => Observa
       catchError((error: unknown) => of<ListState<StoredDocument<T>>>({
         data: null,
         loading: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: formatError(error),
       })),
     ) : of<ListState<StoredDocument<T>>>({ data: null, loading: false, error: '' })),
   ), { initialValue: { data: null, loading: true, error: '' } as ListState<StoredDocument<T>> });
@@ -45,15 +46,16 @@ export class Dashboard {
   readonly eventLogOpen = signal(false);
   readonly colonies: ColoniesService = inject(ColoniesService);
   private readonly selection = toObservable(this.colonies.selectedId);
+  private readonly errors = inject(ErrorMessageService);
   private readonly adaptersService = inject(AdaptersService);
   private readonly indicatorsService = inject(IndicatorConfigurationsService);
   private readonly leversService = inject(LeversService);
 
   readonly colony = computed(() => this.colonies.state().data
     .find((item) => item.id === this.colonies.selectedId())?.data);
-  readonly adapters = observeCollection<AutomationDocument>(this.selection, () => this.adaptersService.watchList());
-  readonly indicatorConfigurations = observeCollection(this.selection, () => this.indicatorsService.watchList());
-  readonly levers = observeCollection<AutomationDocument>(this.selection, () => this.leversService.watchList());
+  readonly adapters = observeCollection<AutomationDocument>(this.selection, () => this.adaptersService.watchList(), (error) => this.errors.format(error));
+  readonly indicatorConfigurations = observeCollection(this.selection, () => this.indicatorsService.watchList(), (error) => this.errors.format(error));
+  readonly levers = observeCollection<AutomationDocument>(this.selection, () => this.leversService.watchList(), (error) => this.errors.format(error));
   readonly savingLevers = signal<ReadonlySet<string>>(new Set());
   readonly leverWriteError = signal('');
   readonly indicatorWriteError = signal('');
@@ -65,7 +67,7 @@ export class Dashboard {
     try {
       await this.leversService.update(id, { state: !state });
     } catch (error: unknown) {
-      this.leverWriteError.set(error instanceof Error ? error.message : String(error));
+      this.leverWriteError.set(this.errors.format(error));
     } finally {
       this.savingLevers.update((ids) => new Set([...ids].filter((savedId) => savedId !== id)));
     }
@@ -80,7 +82,7 @@ export class Dashboard {
         'config.color': configuration.color,
       });
     } catch (error: unknown) {
-      this.indicatorWriteError.set(error instanceof Error ? error.message : String(error));
+      this.indicatorWriteError.set(this.errors.format(error));
     }
   }
 
@@ -90,7 +92,7 @@ export class Dashboard {
     try {
       await this.indicatorsService.update(id, { 'config.visible': false });
     } catch (error: unknown) {
-      this.indicatorWriteError.set(error instanceof Error ? error.message : String(error));
+      this.indicatorWriteError.set(this.errors.format(error));
     }
   }
 

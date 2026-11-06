@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import type { ColonyGood } from '../../../../core/models/colony.model';
 import { EDIBLE_FOOD_IDS } from '../../../../core/models/food-catalog';
 import { GoodCard } from '../good-card/good-card';
@@ -23,7 +24,7 @@ const GOOD_ICONS: Record<string, string> = {
 
 @Component({
   selector: 'app-goods-panel',
-  imports: [GoodCard],
+  imports: [GoodCard, TranslatePipe],
   templateUrl: './goods-panel.html',
   styleUrl: './goods-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,12 +37,12 @@ export class GoodsPanel {
   readonly category = signal<GoodsCategory>('all');
   readonly sort = signal<'default' | 'name' | 'stock' | 'fill'>('default');
   readonly hideEmpty = signal(false);
-  readonly categories: { id: GoodsCategory; label: string; icon: string }[] = [
-    { id: 'all', label: 'Todos', icon: 'fa-boxes-stacked' },
-    { id: 'water', label: 'Agua', icon: 'fa-droplet' },
-    { id: 'food', label: 'Alimentos', icon: 'fa-wheat-awn' },
-    { id: 'materials', label: 'Materiais', icon: 'fa-cubes-stacked' },
-    { id: 'industry', label: 'Industria', icon: 'fa-gears' },
+  readonly categories: { id: GoodsCategory; labelKey: string; icon: string }[] = [
+    { id: 'all', labelKey: 'goods.all', icon: 'fa-boxes-stacked' },
+    { id: 'water', labelKey: 'goods.water', icon: 'fa-droplet' },
+    { id: 'food', labelKey: 'goods.food', icon: 'fa-wheat-awn' },
+    { id: 'materials', labelKey: 'goods.materials', icon: 'fa-cubes-stacked' },
+    { id: 'industry', labelKey: 'goods.industry', icon: 'fa-gears' },
   ];
 
   readonly visibleGoods = computed(() => {

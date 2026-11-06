@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { GoodIcon } from '../../core/good-icon/good-icon';
+import { LanguageService } from '../../core/i18n/language.service';
+import { LanguageSwitcher } from '../../core/i18n/language-switcher';
 import { PRODUCTION_CATALOG } from '../../core/models/production-catalog';
 import type { Faction } from '../../core/models/production.model';
 import { calculateProduction, effectiveCycleHours, recipeOptionsByGood } from './production-calculator';
@@ -20,12 +23,13 @@ export function humanize(id: string): string {
 
 @Component({
   selector: 'app-production',
-  imports: [RouterLink, GoodIcon],
+  imports: [RouterLink, GoodIcon, TranslatePipe, LanguageSwitcher],
   templateUrl: './production.html',
   styleUrl: './production.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Production {
+  readonly languages = inject(LanguageService);
   readonly gameVersion = PRODUCTION_CATALOG.gameVersion;
   readonly factions: readonly Faction[] = ['Folktails', 'IronTeeth'];
   readonly faction = signal<Faction>('Folktails');
@@ -87,7 +91,7 @@ export class Production {
   }
 
   formatNumber(value: number): string {
-    return Number.isInteger(value) ? String(value) : value.toFixed(2);
+    return this.languages.formatNumber(value, Number.isInteger(value) ? 0 : 2);
   }
 
   private patch(id: number, changes: Partial<CalculatorRow>): void {

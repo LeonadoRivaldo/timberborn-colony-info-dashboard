@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import type { AutomationDocument } from '../../../../core/models/automation.model';
 import type { ConfiguredIndicator, IndicatorConfiguration } from '../../../../core/models/indicator-configuration.model';
 import type { StoredDocument } from '../../../../core/models/stored-document.model';
@@ -7,7 +8,7 @@ import { IndicatorCard } from './indicator-card';
 @Component({
   selector: 'app-indicators-panel',
   standalone: true,
-  imports: [IndicatorCard],
+  imports: [IndicatorCard, TranslatePipe],
   templateUrl: './indicators-panel.html',
   styleUrl: './indicators-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

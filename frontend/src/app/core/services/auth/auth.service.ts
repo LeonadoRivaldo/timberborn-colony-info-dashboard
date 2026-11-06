@@ -1,10 +1,12 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { FIREBASE_CLIENT } from '../firebase/firebase-client';
+import { LanguageService } from '../../i18n/language.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly client = inject(FIREBASE_CLIENT);
+  private readonly language = inject(LanguageService);
   private readonly currentUser = signal<User | null>(null);
   private readonly pending = signal(false);
   private readonly failure = signal<string | null>(null);
@@ -34,7 +36,7 @@ export class AuthService {
       this.currentUser.set(credential.user);
       return true;
     } catch {
-      this.failure.set('Nao foi possivel entrar. Verifique email e senha e tente novamente.');
+      this.failure.set(this.language.text('login.signInError'));
       return false;
     } finally {
       this.pending.set(false);
@@ -50,7 +52,7 @@ export class AuthService {
       this.currentUser.set(null);
       return true;
     } catch {
-      this.failure.set('Nao foi possivel sair. Tente novamente.');
+      this.failure.set(this.language.text('login.signOutError'));
       return false;
     } finally {
       this.pending.set(false);

@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import type { AutomationDocument } from '../../../../core/models/automation.model';
 import type { StoredDocument } from '../../../../core/models/stored-document.model';
 
 @Component({
   selector: 'app-levers-panel',
+  imports: [TranslatePipe],
   templateUrl: './levers-panel.html',
   styleUrl: './levers-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

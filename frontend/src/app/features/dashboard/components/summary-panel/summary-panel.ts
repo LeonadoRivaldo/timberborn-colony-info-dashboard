@@ -1,5 +1,7 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '../../../../core/i18n/language.service';
 import type { ColonyDocument, ColonyGood } from '../../../../core/models/colony.model';
 import { EDIBLE_FOOD_IDS } from '../../../../core/models/food-catalog';
 import { DetailsCard } from '../../../../core/details-card/details-card';
@@ -7,12 +9,13 @@ import { DetailsCard } from '../../../../core/details-card/details-card';
 @Component({
   selector: 'app-summary-panel',
   standalone: true,
-  imports: [DecimalPipe, DetailsCard],
+  imports: [DecimalPipe, TranslatePipe, DetailsCard],
   templateUrl: './summary-panel.html',
   styleUrl: './summary-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SummaryPanel {
+  readonly languages = inject(LanguageService);
   readonly colony = input<ColonyDocument>();
   private readonly goods = computed(() => this.colony()?.resources?.goods ?? []);
   readonly food = computed(() => {
@@ -40,11 +43,17 @@ export class SummaryPanel {
 
   populationDetails(): string {
     const population = this.colony()?.population;
-    return `${population?.adults ?? '--'} adultos · ${population?.children ?? '--'} crias · ${population?.bots ?? '--'} bots`;
+    return this.languages.text('summary.populationDetails', {
+      adults: population?.adults ?? '--',
+      children: population?.children ?? '--',
+      bots: population?.bots ?? '--',
+    });
   }
 
-  foodDetails(){
-    return `${this.food().availableTypes} de ${this.food().totalTypes} tipos em estoque`;
+  foodDetails(): string {
+    return this.languages.text('summary.foodDetails', {
+      available: this.food().availableTypes,
+      total: this.food().totalTypes,
+    });
   }
-
 }

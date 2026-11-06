@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { LanguageService } from '../i18n/language.service';
 import type { ColonyPopulation } from '../models/colony.model';
 
 interface PopulationMetric {
@@ -17,12 +18,12 @@ interface PopulationGroup {
   selector: 'app-population-info',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button class="info-trigger" type="button" aria-label="Detalhes da população" [attr.aria-expanded]="open()" (click)="toggle($event)">
+    <button class="info-trigger" type="button" [attr.aria-label]="language.text('population.details')" [attr.aria-expanded]="open()" (click)="toggle($event)">
       <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
     </button>
     @if (open()) {
-      <section class="population-popover" [style.top.px]="position().top" [style.left.px]="position().left" aria-label="Detalhes da população" (keydown.escape)="open.set(false)">
-        <header><h2>População</h2><button class="close" type="button" aria-label="Fechar detalhes" (click)="open.set(false)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></header>
+      <section class="population-popover" [style.top.px]="position().top" [style.left.px]="position().left" [attr.aria-label]="language.text('population.details')" (keydown.escape)="open.set(false)">
+        <header><h2>{{ language.text('population.title') }}</h2><button class="close" type="button" [attr.aria-label]="language.text('common.close')" (click)="open.set(false)"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></header>
         @for (group of groups(); track group.title) {
           <section class="metric-group"><h3>{{ group.title }}</h3><div class="metric-grid">
             @for (metric of group.metrics; track metric.label) {
@@ -59,6 +60,7 @@ interface PopulationGroup {
   `,
 })
 export class PopulationInfo {
+  readonly language = inject(LanguageService);
   readonly population = input<ColonyPopulation>();
   readonly open = signal(false);
   readonly position = signal({ top: 0, left: 0 });
@@ -68,59 +70,59 @@ export class PopulationInfo {
     if (!population) return [];
     const groups: PopulationGroup[] = [
       {
-        title: 'População',
+        title: this.language.text('population.title'),
         metrics: [
-          { label: 'Adultos', value: population.adults, image: 'population/ico-adult.png' },
-          { label: 'Crianças', value: population.children, image: 'population/ico-child.png' },
-          { label: 'Bots', value: population.bots, image: 'population/ico-bot.png' },
-          { label: 'Castores', value: population.beavers ?? population.adults + population.children, image: 'population/ico-workers.png' },
-          { label: 'Bem-estar médio', value: population.averageWellbeing ?? '--', icon: 'fa-face-smile' },
+          { label: this.language.text('population.adults'), value: population.adults, image: 'population/ico-adult.png' },
+          { label: this.language.text('population.children'), value: population.children, image: 'population/ico-child.png' },
+          { label: this.language.text('population.bots'), value: population.bots, image: 'population/ico-bot.png' },
+          { label: this.language.text('population.beavers'), value: population.beavers ?? population.adults + population.children, image: 'population/ico-workers.png' },
+          { label: this.language.text('population.averageWellbeing'), value: population.averageWellbeing ?? '--', icon: 'fa-face-smile' },
         ],
       },
     ];
     if (population.beds) groups.push({
-      title: 'Moradia',
+      title: this.language.text('population.housing'),
       metrics: [
-        { label: 'Camas ocupadas', value: population.beds.occupied, image: 'population/ico-bed.png' },
-        { label: 'Camas livres', value: population.beds.free, image: 'population/ico-bed-empty.png' },
-        { label: 'Sem cama', value: population.beds.homeless, image: 'population/ico-no-bed.png' },
+        { label: this.language.text('population.bedsOccupied'), value: population.beds.occupied, image: 'population/ico-bed.png' },
+        { label: this.language.text('population.bedsFree'), value: population.beds.free, image: 'population/ico-bed-empty.png' },
+        { label: this.language.text('population.homeless'), value: population.beds.homeless, image: 'population/ico-no-bed.png' },
       ],
     });
     if (population.beaverWorkplaces) groups.push({
-      title: 'Postos de castores',
+      title: this.language.text('population.beaverWorkplaces'),
       metrics: [
-        { label: 'Ocupados', value: population.beaverWorkplaces.occupied, image: 'population/ico-work-beaver.png' },
-        { label: 'Livres', value: population.beaverWorkplaces.free, image: 'population/ico-work-empty-beaver.png' },
-        { label: 'Desempregados', value: population.beaverWorkplaces.unemployed, image: 'population/ico-no-work-beaver.png' },
+        { label: this.language.text('population.occupied'), value: population.beaverWorkplaces.occupied, image: 'population/ico-work-beaver.png' },
+        { label: this.language.text('population.free'), value: population.beaverWorkplaces.free, image: 'population/ico-work-empty-beaver.png' },
+        { label: this.language.text('population.unemployed'), value: population.beaverWorkplaces.unemployed, image: 'population/ico-no-work-beaver.png' },
       ],
     });
     if (population.botWorkplaces) groups.push({
-      title: 'Postos de bots',
+      title: this.language.text('population.botWorkplaces'),
       metrics: [
-        { label: 'Ocupados', value: population.botWorkplaces.occupied, image: 'population/ico-work-bot.png' },
-        { label: 'Livres', value: population.botWorkplaces.free, image: 'population/ico-work-empty-bot.png' },
-        { label: 'Desempregados', value: population.botWorkplaces.unemployed, image: 'population/ico-no-work-bot.png' },
+        { label: this.language.text('population.occupied'), value: population.botWorkplaces.occupied, image: 'population/ico-work-bot.png' },
+        { label: this.language.text('population.free'), value: population.botWorkplaces.free, image: 'population/ico-work-empty-bot.png' },
+        { label: this.language.text('population.unemployed'), value: population.botWorkplaces.unemployed, image: 'population/ico-no-work-bot.png' },
       ],
     });
     if (population.contamination) groups.push({
-      title: 'Contaminação',
+      title: this.language.text('population.contamination'),
       metrics: [
-        { label: 'Adultos', value: population.contamination.adults, icon: 'fa-biohazard' },
-        { label: 'Crianças', value: population.contamination.children, icon: 'fa-biohazard' },
-        { label: 'Total', value: population.contamination.total, icon: 'fa-biohazard' },
+        { label: this.language.text('population.adults'), value: population.contamination.adults, icon: 'fa-biohazard' },
+        { label: this.language.text('population.children'), value: population.contamination.children, icon: 'fa-biohazard' },
+        { label: this.language.text('population.total'), value: population.contamination.total, icon: 'fa-biohazard' },
       ],
     });
     if (population.beaverWorkforce || population.botWorkforce) {
       const metrics: PopulationMetric[] = [];
       if (population.beaverWorkforce) metrics.push(
-        { label: 'Castores aptos', value: population.beaverWorkforce.employable, icon: 'fa-person-circle-check' },
-        { label: 'Castores não aptos', value: population.beaverWorkforce.unemployable, icon: 'fa-person-circle-exclamation' },
+        { label: this.language.text('population.beaversEmployable'), value: population.beaverWorkforce.employable, icon: 'fa-person-circle-check' },
+        { label: this.language.text('population.beaversUnemployable'), value: population.beaverWorkforce.unemployable, icon: 'fa-person-circle-exclamation' },
       );
       if (population.botWorkforce) metrics.push(
-        { label: 'Bots aptos', value: population.botWorkforce.employable, icon: 'fa-robot' },
-        { label: 'Bots não aptos', value: population.botWorkforce.unemployable, icon: 'fa-robot' },
+        { label: this.language.text('population.botsEmployable'), value: population.botWorkforce.employable, icon: 'fa-robot' },
+        { label: this.language.text('population.botsUnemployable'), value: population.botWorkforce.unemployable, icon: 'fa-robot' },
       );
-      groups.push({ title: 'Força de trabalho', metrics });
+      groups.push({ title: this.language.text('population.workforce'), metrics });
     }
     return groups;
   });

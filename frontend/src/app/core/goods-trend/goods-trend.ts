@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { LanguageService } from '../i18n/language.service';
 import type { GoodsTrend as GoodsTrendValue } from '../models/colony.model';
 
 const TREND_PRESENTATION = {
-  HighDepletion: { direction: 'down', levels: [1, 2, 3], label: 'Queda alta' },
-  MediumDepletion: { direction: 'down', levels: [1, 2], label: 'Queda moderada' },
-  LowDepletion: { direction: 'down', levels: [1], label: 'Queda leve' },
-  Stable: { direction: 'stable', levels: [], label: 'Estavel' },
-  LowGrowth: { direction: 'up', levels: [1], label: 'Crescimento leve' },
-  MediumGrowth: { direction: 'up', levels: [1, 2], label: 'Crescimento moderado' },
-  HighGrowth: { direction: 'up', levels: [1, 2, 3], label: 'Crescimento alto' },
+  HighDepletion: { direction: 'down', levels: [1, 2, 3], label: 'trends.highDepletion' },
+  MediumDepletion: { direction: 'down', levels: [1, 2], label: 'trends.mediumDepletion' },
+  LowDepletion: { direction: 'down', levels: [1], label: 'trends.lowDepletion' },
+  Stable: { direction: 'stable', levels: [], label: 'trends.stable' },
+  LowGrowth: { direction: 'up', levels: [1], label: 'trends.lowGrowth' },
+  MediumGrowth: { direction: 'up', levels: [1, 2], label: 'trends.mediumGrowth' },
+  HighGrowth: { direction: 'up', levels: [1, 2, 3], label: 'trends.highGrowth' },
 } as const;
 
 @Component({
@@ -33,14 +34,15 @@ const TREND_PRESENTATION = {
   `,
 })
 export class GoodsTrend {
+  private readonly language = inject(LanguageService);
   readonly trend = input<GoodsTrendValue>();
   readonly presentation = computed(() => {
     const trend = this.trend();
     if (!trend || !Object.hasOwn(TREND_PRESENTATION, trend.type)) return null;
     const presentation = TREND_PRESENTATION[trend.type];
     const days = presentation.direction === 'down' && Number.isFinite(trend.daysLeft) && trend.daysLeft >= 0
-      ? ` - Estoque estimado para ${trend.daysLeft.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} dias`
+      ? this.language.text('trends.estimatedStock', { days: this.language.formatNumber(trend.daysLeft, 1) })
       : '';
-    return { ...presentation, description: presentation.label + days };
+    return { ...presentation, description: this.language.text(presentation.label) + days };
   });
 }

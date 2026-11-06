@@ -11,18 +11,16 @@
     <h3>{{ good().name }}</h3>
   </div>
   <div class="good-type">
-    <span>{{
-      good().type === 'Liquid' ? 'LIQUIDO' : good().type === 'Pileable' ? 'PILHA' : 'CAIXA'
-    }}</span>
+    <span>{{ (good().type === 'Liquid' ? 'goods.liquid' : good().type === 'Pileable' ? 'goods.pile' : 'goods.box') | translate }}</span>
   </div>
   <div class="good-values">
-    <strong>{{ good().stock | number: '1.0-0' }}</strong
-    ><span>/ {{ good().capacity | number: '1.0-0' }}</span>
+    <strong>{{ good().stock | number: '1.0-0':languages.locale() }}</strong
+    ><span>/ {{ good().capacity | number: '1.0-0':languages.locale() }}</span>
   </div>
   <div
     class="good-track"
     role="progressbar"
-    [attr.aria-label]="good().name + ': estoque sobre capacidade'"
+    [attr.aria-label]="'goods.stockOnCapacity' | translate: { name: good().name }"
     [attr.aria-valuenow]="fill()"
     aria-valuemin="0"
     aria-valuemax="100"
@@ -30,10 +28,10 @@
     <span [style.width.%]="fill()"></span>
   </div>
   <div class="good-footer">
-    <span>{{ good().capacity > 0 ? (fill() | number: '1.0-0') + '%' : 'SEM CAPACIDADE' }}</span>
+    <span>{{ good().capacity > 0 ? (fill() | number: '1.0-0':languages.locale()) + '%' : ('goods.noCapacity' | translate) }}</span>
     <span class="overflow-stock">{{
       good().stock > good().capacity
-        ? '+' + (good().stock - good().capacity | number: '1.0-0') + ' excedente'
+        ? '+' + (good().stock - good().capacity | number: '1.0-0':languages.locale()) + ' ' + ('goods.excess' | translate)
         : ''
     }}</span>
   </div>

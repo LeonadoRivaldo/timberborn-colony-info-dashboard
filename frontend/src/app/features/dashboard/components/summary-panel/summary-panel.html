@@ -1,52 +1,52 @@
 <details class="summary-accordion" open>
-<summary><span><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>Resumo da colonia</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
-<section class="overview" aria-label="Resumo da colonia">
+<summary><span><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>{{ 'summary.title' | translate }}</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+<section class="overview" [attr.aria-label]="'summary.title' | translate">
   <app-details-card
     class="population-summary"
-    aria-label="Populacao"
-    label="Populacao"
+    [attr.aria-label]="'population.title' | translate"
+    [label]="'population.title' | translate"
     icon="fa-users"
     [population]="colony()?.population"
-    [value]="colony()?.population?.total | number: '1.0-0'"
-    unit="habitantes"
+    [value]="colony()?.population?.total | number: '1.0-0':languages.locale()"
+    [unit]="'summary.inhabitants' | translate"
     [details]="[populationDetails()]"
   />
   <app-details-card
-    label="Reserva de alimentos"
+    [label]="'summary.foodReserve' | translate"
     icon="fa-bowl-food"
     [gameIconId]="'Carrot'"
-    [value]="colony()?.resources ? (food().stock | number: '1.0-0') : null"
-    unit="unidades"
+    [value]="colony()?.resources ? (food().stock | number: '1.0-0':languages.locale()) : null"
+    [unit]="'summary.units' | translate"
     [details]="[foodDetails()]"
   />
   @if (water(); as currentWater) {
     <app-details-card
-      label="Reserva de agua"
+      [label]="'summary.waterReserve' | translate"
       icon="fa-droplet"
       [trend]="currentWater.trend"
-      [value]="currentWater.stock | number: '1.0-0'"
-      [unit]="'/ ' + (currentWater.capacity | number: '1.0-0')"
+      [value]="currentWater.stock | number: '1.0-0':languages.locale()"
+      [unit]="'/ ' + (currentWater.capacity | number: '1.0-0':languages.locale())"
       [fillBar]="true"
       [currentFillBarValue]="currentWater.stock"
       [maxFillBarValue]="currentWater.capacity"
-      [details]="[(fill(currentWater) | number: '1.0-0') + '% da capacidade']"
+      [details]="[languages.text('summary.capacity', { value: fill(currentWater) | number: '1.0-0':languages.locale() })]"
     />
   } @else {
-    <app-details-card label="Reserva de agua" icon="fa-droplet" value="--" unit="/ --" />
+    <app-details-card [label]="'summary.waterReserve' | translate" icon="fa-droplet" value="--" unit="/ --" />
   }
   <app-details-card
-    label="Rede de energia"
+    [label]="'summary.powerGrid' | translate"
     icon="fa-bolt"
     [gameIconId]="'Gear'"
-    [value]="colony()?.powerGrid ? (power().supply | number: '1.0-0') : null"
+    [value]="colony()?.powerGrid ? (power().supply | number: '1.0-0':languages.locale()) : null"
     unit="hp"
     [details]="[
-      'Demanda ' + (power().demand | number: '1.0-0') + ' hp · ' + power().networks + ' redes',
+      languages.text('summary.demand', { value: power().demand | number: '1.0-0':languages.locale(), count: power().networks }),
       power().strained
-        ? power().strained + ' redes com deficit'
+        ? languages.text('summary.networksInDeficit', { count: power().strained })
         : colony()?.powerGrid
-          ? 'Geracao atende a demanda'
-          : 'Sem leitura de energia'
+          ? languages.text('summary.generationMeetsDemand')
+          : languages.text('summary.noPowerRead')
     ]"
   />
 </section>

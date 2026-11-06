@@ -7,6 +7,7 @@ import { AdaptersService } from '../../core/services/adapters/adapters.service';
 import { ColoniesService } from '../../core/services/colonies/colonies.service';
 import { IndicatorConfigurationsService } from '../../core/services/indicators/indicator-configurations.service';
 import { LeversService } from '../../core/services/levers/levers.service';
+import { provideI18n } from '../../core/i18n/i18n.providers';
 import { Dashboard } from './dashboard';
 
 describe('Dashboard container', () => {
@@ -22,6 +23,7 @@ describe('Dashboard container', () => {
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
+        ...provideI18n(),
         provideRouter([]),
         { provide: AdaptersService, useValue: { watchList: adapterWatch } },
         { provide: IndicatorConfigurationsService, useValue: { watchList: configurationWatch, update: vi.fn() } },
@@ -60,7 +62,7 @@ describe('Dashboard container', () => {
     activeOnly.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.indicator-name')?.textContent).toContain('drought');
-    expect(fixture.nativeElement.querySelector('.indicator-name small')?.textContent).toContain('INATIVO');
+    expect(fixture.nativeElement.querySelector('.indicator-name small')?.textContent).toContain('OFF');
     fixture.destroy();
     expect(secondAdapters.observed).toBe(false);
     expect(secondConfigurations.observed).toBe(false);
@@ -71,6 +73,7 @@ describe('Dashboard container', () => {
     const updateConfiguration = vi.fn().mockResolvedValue(undefined);
     const updateLever = vi.fn().mockResolvedValue(undefined);
     await TestBed.configureTestingModule({ imports: [Dashboard], providers: [
+      ...provideI18n(),
       provideRouter([]),
       { provide: AdaptersService, useValue: { watchList: () => of([]) } },
       { provide: IndicatorConfigurationsService, useValue: { watchList: () => of([]), update: updateConfiguration } },

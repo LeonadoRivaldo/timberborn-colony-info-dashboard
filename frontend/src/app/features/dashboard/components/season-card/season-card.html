@@ -1,6 +1,6 @@
 <app-status-card
-  label="CLIMA ATUAL"
+  [label]="'season.current' | translate"
   [icon]="season()?.icon || 'fa-cloud'"
-  [value]="season()?.label || (loading() ? 'Carregando...' : 'Sem sinal')"
+  [value]="season() ? (season()?.labelKey | translate) : (loading() ? ('common.loading' | translate) : ('season.none' | translate))"
   [tone]="season()?.id === 'drought' ? 'warning' : season()?.id === 'badwater' ? 'danger' : season() ? 'info' : 'neutral'"
 /> 

@@ -4,10 +4,11 @@ import { GoodsPanel } from './goods-panel/goods-panel';
 import { IndicatorCard } from './indicators-panel/indicator-card';
 import { IndicatorsPanel } from './indicators-panel/indicators-panel';
 import { SummaryPanel } from './summary-panel/summary-panel';
+import { provideI18n } from '../../../core/i18n/i18n.providers';
 
 describe('Dashboard panels and cards', () => {
   it('renders summary values and four reusable detail cards with separators', async () => {
-    await TestBed.configureTestingModule({ imports: [SummaryPanel] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [SummaryPanel], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(SummaryPanel);
     fixture.componentRef.setInput('colony', {
       timestamp: '2026-10-24T10:00:00Z',
@@ -31,7 +32,7 @@ describe('Dashboard panels and cards', () => {
   });
 
   it('renders goods stock with accessible capacity fill', async () => {
-    await TestBed.configureTestingModule({ imports: [GoodCard] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [GoodCard], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(GoodCard);
     fixture.componentRef.setInput('good', { id: 'Water', name: 'Water', type: 'Liquid', stock: 50, capacity: 100 });
     fixture.componentRef.setInput('category', 'water');
@@ -43,7 +44,7 @@ describe('Dashboard panels and cards', () => {
   });
 
   it('filters and sorts goods inside its own panel', async () => {
-    await TestBed.configureTestingModule({ imports: [GoodsPanel] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [GoodsPanel], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(GoodsPanel);
     fixture.componentRef.setInput('goods', [
       { id: 'Water', name: 'Water', type: 'Liquid', stock: 100, capacity: 200 },
@@ -63,20 +64,20 @@ describe('Dashboard panels and cards', () => {
   });
 
   it('renders configured indicator state using its color and removal action', async () => {
-    await TestBed.configureTestingModule({ imports: [IndicatorCard] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [IndicatorCard], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(IndicatorCard);
     const removed: string[] = [];
     fixture.componentInstance.remove.subscribe((id) => removed.push(id));
     fixture.componentRef.setInput('indicator', { id: 'badwater', name: 'BADWATER', color: '#ff6655', state: true });
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.indicator-light.active').style.getPropertyValue('--indicator-color')).toBe('#ff6655');
-    expect(fixture.nativeElement.textContent).toContain('ATIVO');
+    expect(fixture.nativeElement.textContent).toContain('ON');
     fixture.nativeElement.querySelector('button').click();
     expect(removed).toEqual(['badwater']);
   });
 
   it('shows active indicators by default and reveals the add form on demand', async () => {
-    await TestBed.configureTestingModule({ imports: [IndicatorsPanel] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [IndicatorsPanel], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(IndicatorsPanel);
     const saved: { id: string; color: string }[] = [];
     fixture.componentInstance.saveConfiguration.subscribe((configuration) => saved.push(configuration));
@@ -109,7 +110,7 @@ describe('Dashboard panels and cards', () => {
   });
 
   it('shows every adapter read-only in the Timberborn indicators panel', async () => {
-    await TestBed.configureTestingModule({ imports: [IndicatorsPanel] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [IndicatorsPanel], providers: [...provideI18n()] }).compileComponents();
     const fixture = TestBed.createComponent(IndicatorsPanel);
     fixture.componentRef.setInput('readOnlyMode', true);
     fixture.componentRef.setInput('configurations', [

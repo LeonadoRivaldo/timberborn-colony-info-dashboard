@@ -1,18 +1,19 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import type { AutomationDocument } from '../../../../core/models/automation.model';
 import type { StoredDocument } from '../../../../core/models/stored-document.model';
 import { normalizeIndicatorName } from '../../../../core/utils/normalize-indicator-name';
 import { StatusCard } from '../../../../core/status-card/status-card';
 
 const SEASONS = [
-  { id: 'badwater', label: 'Mare toxica', icon: 'fa-biohazard', names: ['BADWATER', 'BADTIDE', 'BADWATERSEASON', 'BADTIDEACTIVE', 'ISBADTIDE'] },
-  { id: 'drought', label: 'Seca', icon: 'fa-sun', names: ['DROUGHT', 'DRY', 'DRYSEASON', 'DROUGHTSEASON', 'DROUGHTACTIVE', 'ISDROUGHT'] },
-  { id: 'wet', label: 'Estacao chuvosa', icon: 'fa-cloud-rain', names: ['WET', 'TEMPERATE', 'WETSEASON', 'WETSEASONS', 'TEMPERATESEASON', 'WETSEASONACTIVE', 'ISWETSEASON'] },
+  { id: 'badwater', labelKey: 'season.badwater', icon: 'fa-biohazard', names: ['BADWATER', 'BADTIDE', 'BADWATERSEASON', 'BADTIDEACTIVE', 'ISBADTIDE'] },
+  { id: 'drought', labelKey: 'season.drought', icon: 'fa-sun', names: ['DROUGHT', 'DRY', 'DRYSEASON', 'DROUGHTSEASON', 'DROUGHTACTIVE', 'ISDROUGHT'] },
+  { id: 'wet', labelKey: 'season.wet', icon: 'fa-cloud-rain', names: ['WET', 'TEMPERATE', 'WETSEASON', 'WETSEASONS', 'TEMPERATESEASON', 'WETSEASONACTIVE', 'ISWETSEASON'] },
 ];
 
 @Component({
   selector: 'app-season-card',
-  imports: [StatusCard],
+  imports: [TranslatePipe, StatusCard],
   templateUrl: './season-card.html',
   styleUrl: './season-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

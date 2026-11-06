@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { TimberbornDataFacade } from './timberborn-data.facade';
+import { provideI18n } from '../../i18n/i18n.providers';
 
 describe('TimberbornDataFacade', () => {
   let facade: TimberbornDataFacade;
@@ -15,6 +16,7 @@ describe('TimberbornDataFacade', () => {
     post = vi.fn().mockReturnValue(of('OK'));
     TestBed.configureTestingModule({
       providers: [
+        ...provideI18n(),
         TimberbornDataFacade,
         { provide: HttpClient, useValue: { get, post } },
       ],

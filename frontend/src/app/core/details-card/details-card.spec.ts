@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DetailsCard } from './details-card';
+import { provideI18n } from '../i18n/i18n.providers';
 
 describe('DetailsCard', () => {
   let component: DetailsCard;
@@ -8,6 +9,7 @@ describe('DetailsCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DetailsCard],
+      providers: [...provideI18n()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DetailsCard);

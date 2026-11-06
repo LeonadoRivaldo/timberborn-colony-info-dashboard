@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { StoredDocument } from '../../core/services/firestore/firestore.repository';
@@ -8,10 +9,12 @@ import { AdaptersService } from '../../core/services/adapters/adapters.service';
 import { ColoniesService } from '../../core/services/colonies/colonies.service';
 import { IndicatorConfigurationsService } from '../../core/services/indicators/indicator-configurations.service';
 import { LeversService } from '../../core/services/levers/levers.service';
+import { ErrorMessageService } from '../../core/i18n/error-message.service';
+import { LanguageSwitcher } from '../../core/i18n/language-switcher';
 
 type CollectionKind = 'indicators' | 'levers' | 'adapters';
 
-function observeItems<T extends { name?: unknown }>(selection: Observable<string>, read: () => Observable<StoredDocument<T>[]>) {
+function observeItems<T extends { name?: unknown }>(selection: Observable<string>, read: () => Observable<StoredDocument<T>[]>, formatError: (error: unknown) => string) {
   const empty = { items: [] as { id: string; name: string }[], loading: false, error: '' };
   return toSignal(selection.pipe(switchMap(id => id ? read().pipe(
     map(documents => ({
@@ -23,13 +26,13 @@ function observeItems<T extends { name?: unknown }>(selection: Observable<string
       error: '',
     })),
     startWith({ ...empty, loading: true }),
-    catchError((error: unknown) => of({ ...empty, error: error instanceof Error ? error.message : String(error) })),
+    catchError((error: unknown) => of({ ...empty, error: formatError(error) })),
   ) : of(empty))), { initialValue: { ...empty, loading: true } });
 }
 
 @Component({
   selector: 'app-management',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe, LanguageSwitcher],
   templateUrl: './management.html',
   styleUrl: './management.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,11 +42,12 @@ export class Management {
   private readonly adapters = inject(AdaptersService);
   private readonly indicators = inject(IndicatorConfigurationsService);
   private readonly levers = inject(LeversService);
+  private readonly errors = inject(ErrorMessageService);
   private readonly selection = toObservable(this.colonies.selectedId);
   readonly sections = [
-    { kind: 'indicators' as const, title: 'Indicators', state: observeItems(this.selection, () => this.indicators.watchList()) },
-    { kind: 'levers' as const, title: 'Levers', state: observeItems(this.selection, () => this.levers.watchList()) },
-    { kind: 'adapters' as const, title: 'Adapters', state: observeItems(this.selection, () => this.adapters.watchList()) },
+    { kind: 'indicators' as const, titleKey: 'management.indicators', state: observeItems(this.selection, () => this.indicators.watchList(), (error) => this.errors.format(error)) },
+    { kind: 'levers' as const, titleKey: 'management.levers', state: observeItems(this.selection, () => this.levers.watchList(), (error) => this.errors.format(error)) },
+    { kind: 'adapters' as const, titleKey: 'management.adapters', state: observeItems(this.selection, () => this.adapters.watchList(), (error) => this.errors.format(error)) },
   ];
   readonly deleting = signal<ReadonlySet<string>>(new Set());
   readonly deleteError = signal('');
@@ -57,7 +61,7 @@ export class Management {
     const colonyId = this.colonies.selectedId();
     const key = `${colonyId}/${kind}/${id}`;
     if (!colonyId || this.deleting().has(key)) return;
-    if (!confirm(`Excluir "${name}" de ${kind} desta colonia? O documento sera apagado do Firestore. O jogo pode recria-lo ao enviar outra atualizacao.`)) return;
+    if (!confirm(this.errors.text('management.delete', { name, kind: this.errors.text(`management.${kind}`) }))) return;
     this.deleting.update(current => new Set([...current, key]));
     this.deleteError.set('');
     try {
@@ -65,7 +69,7 @@ export class Management {
       await service.delete(id);
     } catch (error: unknown) {
       if (this.colonies.selectedId() === colonyId) {
-        this.deleteError.set(error instanceof Error ? error.message : String(error));
+        this.deleteError.set(this.errors.format(error));
       }
     } finally {
       this.deleting.update(current => new Set([...current].filter(item => item !== key)));

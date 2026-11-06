@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import type { AutomationDocument } from '../../../../core/models/automation.model';
 import type { ColonyDocument } from '../../../../core/models/colony.model';
+import { LanguageSwitcher } from '../../../../core/i18n/language-switcher';
+import { LanguageService } from '../../../../core/i18n/language.service';
 import type { IndicatorConfiguration } from '../../../../core/models/indicator-configuration.model';
 import type { StoredDocument } from '../../../../core/models/stored-document.model';
 import { IndicatorsPanel } from '../indicators-panel/indicators-panel';
@@ -13,12 +16,13 @@ import type { StatusTone } from '../../../../core/status-card/status-card';
 
 @Component({
   selector: 'app-dashboard-shell',
-  imports: [DatePipe, RouterLink, IndicatorsPanel, LeversPanel, SeasonCard, StatusCard],
+  imports: [DatePipe, RouterLink, TranslatePipe, LanguageSwitcher, IndicatorsPanel, LeversPanel, SeasonCard, StatusCard],
   templateUrl: './dashboard-shell.html',
   styleUrl: './dashboard-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardShell {
+  readonly languages = inject(LanguageService);
   readonly eventLogOpen = input(false);
   readonly staticMode = input(false);
   readonly activeDrawer = signal<'levers' | 'indicators' | null>(null);

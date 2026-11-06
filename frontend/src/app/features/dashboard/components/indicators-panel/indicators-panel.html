@@ -1,35 +1,35 @@
-<section class="panel" aria-label="Indicators configurados">
-  <div class="section-heading"><h2><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>Indicators</h2><span class="count">{{ indicators().length }}</span></div>
-  @if (!readOnlyMode()) { <label class="active-filter"><input type="checkbox" [checked]="showActiveOnly()" (change)="showActiveOnly.set($any($event.target).checked)" />Mostrar apenas ativos</label> }
-  @if (configurationsLoading()) { <p class="empty" role="status">Carregando...</p> }
+<section class="panel" [attr.aria-label]="'indicators.configured' | translate">
+  <div class="section-heading"><h2><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>{{ 'indicators.title' | translate }}</h2><span class="count">{{ indicators().length }}</span></div>
+  @if (!readOnlyMode()) { <label class="active-filter"><input type="checkbox" [checked]="showActiveOnly()" (change)="showActiveOnly.set($any($event.target).checked)" />{{ 'indicators.activeOnly' | translate }}</label> }
+  @if (configurationsLoading()) { <p class="empty" role="status">{{ 'common.loading' | translate }}</p> }
   @if (configurationsError()) { <p class="error" role="alert">{{ configurationsError() }}</p> }
   @if (saveError()) { <p class="error" role="alert">{{ saveError() }}</p> }
 
   @if (!readOnlyMode()) { <button class="new-indicator-button" type="button" [attr.aria-expanded]="isAdding()" (click)="isAdding() ? cancelAdd() : openAddForm()">
     <i class="fa-solid" [class.fa-plus]="!isAdding()" [class.fa-xmark]="isAdding()" aria-hidden="true"></i>
-    {{ isAdding() ? 'Cancelar' : 'Adicionar indicator' }}
+    {{ (isAdding() ? 'indicators.cancel' : 'indicators.add') | translate }}
   </button> }
 
   <ul class="indicator-list">
     @for (indicator of indicators(); track indicator.id) {
       <app-indicator-card [indicator]="indicator" [readOnlyMode]="readOnlyMode()" (remove)="remove($event)" />
     } @empty {
-      @if (!configurationsLoading()) { <li class="empty">{{ readOnlyMode() ? 'Nenhum adapter.' : (showActiveOnly() ? 'Nenhum indicator ativo.' : 'Nenhum indicator configurado.') }}</li> }
+      @if (!configurationsLoading()) { <li class="empty">{{ (readOnlyMode() ? 'indicators.noneAdapters' : (showActiveOnly() ? 'indicators.noneActive' : 'indicators.noneConfigured')) | translate }}</li> }
     }
   </ul>
 
   @if (!readOnlyMode() && isAdding()) {
     <form class="indicator-config" (submit)="$event.preventDefault(); save()">
-      <label for="indicator-name">Indicator</label>
+      <label for="indicator-name">{{ 'indicators.title' | translate }}</label>
       <select id="indicator-name" [value]="selectedId()" (change)="selectedId.set($any($event.target).value)">
-        <option value="">Selecione um indicator</option>
+        <option value="">{{ 'indicators.select' | translate }}</option>
         @for (indicator of availableIndicators(); track indicator.id) {
           <option [value]="indicator.id">{{ displayName(indicator.data.name || indicator.id) }}</option>
         }
       </select>
-      @if (!availableIndicators().length) { <p class="empty">Nenhum indicator disponivel para adicionar.</p> }
-      <div class="color-row"><label for="indicator-color">Cor</label><input id="indicator-color" type="color" [value]="selectedColor()" (input)="selectedColor.set($any($event.target).value)" /><button type="submit" [disabled]="!selectedId()">Salvar</button></div>
+      @if (!availableIndicators().length) { <p class="empty">{{ 'indicators.noneAvailable' | translate }}</p> }
+      <div class="color-row"><label for="indicator-color">{{ 'indicators.color' | translate }}</label><input id="indicator-color" type="color" [value]="selectedColor()" (input)="selectedColor.set($any($event.target).value)" /><button type="submit" [disabled]="!selectedId()">{{ 'indicators.save' | translate }}</button></div>
     </form>
   }
-  @if (!readOnlyMode()) { <div class="rail-note"><i class="fa-solid fa-palette" aria-hidden="true"></i>CONFIGURACAO POR COLONIA</div> }
+  @if (!readOnlyMode()) { <div class="rail-note"><i class="fa-solid fa-palette" aria-hidden="true"></i>{{ 'indicators.byColony' | translate }}</div> }
 </section>

@@ -4,6 +4,7 @@ import { catchError, defer, firstValueFrom, map, Observable, of, repeat, shareRe
 import type { AutomationDocument } from '../../models/automation.model';
 import type { ColonyDocument } from '../../models/colony.model';
 import type { StoredDocument } from '../../models/stored-document.model';
+import { ErrorMessageService } from '../../i18n/error-message.service';
 
 export type TimberbornCollection = 'adapters' | 'indicators' | 'levers';
 
@@ -13,11 +14,12 @@ export interface ApiState<T> {
   error: string;
 }
 
-const POLL_INTERVAL_MS = 5000;
+const POLL_INTERVAL_MS = 120000;
 
 @Injectable({ providedIn: 'root' })
 export class TimberbornDataFacade {
   private readonly http = inject(HttpClient);
+  private readonly errors = inject(ErrorMessageService);
   private readonly adapters = this.poll<AutomationDocument[]>('/api/adapters');
   private readonly levers = this.poll<AutomationDocument[]>('/api/levers');
   private readonly colony = this.poll<ColonyDocument>('/api/colony-info');
@@ -55,7 +57,7 @@ export class TimberbornDataFacade {
         catchError((error: unknown) => of<ApiState<T>>({
           data: null,
           loading: false,
-          error: error instanceof Error ? error.message : String(error),
+          error: this.errors.format(error),
         })),
       repeat({ delay: POLL_INTERVAL_MS }),
       startWith({ data: null, loading: true, error: '' } as ApiState<T>),

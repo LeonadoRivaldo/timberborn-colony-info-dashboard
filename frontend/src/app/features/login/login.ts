@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageSwitcher } from '../../core/i18n/language-switcher';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { FirebaseConfiguration } from '../../core/services/firebase/firebase-client';
 
-@Component({ selector: 'app-login', imports: [FormsModule], templateUrl: './login.html', styleUrl: './login.scss' })
+@Component({ selector: 'app-login', imports: [FormsModule, TranslatePipe, LanguageSwitcher], templateUrl: './login.html', styleUrl: './login.scss' })
 export class Login {
   readonly auth = inject(AuthService);
   readonly configuration = inject(FirebaseConfiguration);

@@ -14,15 +14,22 @@ npm test -- --watch=false
 npm run build -- --base-href /colony-info/
 ```
 
+## Idiomas
+
+A interface usa inglês por padrão e permite escolher English, português do
+Brasil, espanhol ou francês no seletor do cabeçalho. A escolha fica salva neste
+navegador e vale tanto para o modo Firebase quanto para o build Timberborn.
+
 ## Timberborn Static Build
 
 The separate `timberborn` build has no Firebase, login, or colony selector. It
 polls `/api/colony-info`, `/api/adapters`, and `/api/levers` every five seconds.
-Indicator visibility and colors are stored in the browser's local storage.
+All adapters appear read-only in the indicators panel; levers are listed and
+controlled separately.
 
 The mod server serves the static app and proxies the game API on the same origin,
-so browser CORS restrictions do not block lever reads or commands. The proxy
-targets the Timberborn HTTP API on `localhost:7778`.
+so browser CORS restrictions do not block lever reads or commands. The proxy uses
+the Timberborn HTTP API port currently configured in the game.
 
 Build the static files with:
 
